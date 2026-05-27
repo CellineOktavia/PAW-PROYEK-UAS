@@ -382,17 +382,14 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto gap-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Fitur</a>
+                        <a class="nav-link" href="#">Kontak</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Tentang</a>
                     </li>
                 </ul>
 
-                <a href="/login" class="btn-login text-decoration-none">Login</a>
+                <a href="{{ route('login') }}" class="btn-login text-decoration-none">Login</a>
             </div>
         </div>
     </nav>
@@ -419,7 +416,7 @@
                     </p>
 
                     <div class="mt-4 d-flex gap-3 flex-wrap animate-fadeup delay-3">
-                        <a href="#" class="btn-hero-primary">
+                        <a href="{{ route('login') }}" class="btn-hero-primary">
                             <i class="bi bi-rocket-takeoff me-2"></i>Mulai Sekarang
                         </a>
                     </div>

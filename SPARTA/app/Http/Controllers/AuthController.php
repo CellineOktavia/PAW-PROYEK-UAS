@@ -9,70 +9,58 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // ==================== REGISTER ====================
-    // Tampilkan form register
-    public function registerForm()
+    public function showLogin()
     {
-        return view('auth.register', ['title' => 'Daftar Akun']);
+        return view('auth.login');
     }
-    // Proses simpan user baru
+
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
     public function register(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|min:6|confirmed',
         ]);
-        // Simpan user baru ke database
-        User::create([
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // enkripsi password
+            'password' => Hash::make($request->password),
         ]);
-        // Redirect ke halaman login dengan pesan sukses
-        return redirect('/login')->with('success', 'Akun berhasil dibuat. Silakan login.');
-    }
-    // ==================== LOGIN ====================
-    // Tampilkan form login
-    public function loginForm()
-    {
-        return view('auth.login', ['title' => 'Login']);
+
+        Auth::login($user);
+
+        return redirect()->route('dashboard');
     }
 
-    // Proses autentikasi pengguna
     public function login(Request $request)
     {
-        // Validasi input
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required',
         ]);
 
-        // Ambil kredensial dari request
-        $credentials = $request->only('email', 'password');
-        // Coba login dengan Auth::attempt()
-        // Parameter kedua true = aktifkan fitur "Remember Me"
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            // Regenerasi session untuk mencegah Session Fixation Attack
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            // Redirect ke halaman yang dituju atau /dashboard
-            return redirect()->intended('/dashboard');
+
+            return redirect()->route('dashboard');
         }
-        // Jika gagal, kembali ke form login dengan pesan error
-        return back()
-            ->withInput($request->only('email'))
-            ->withErrors(['email' => 'Email atau password salah.']);
+
+        return back()->with('error', 'Email atau password salah.');
     }
-    
-    // ==================== LOGOUT ====================
-    // Proses logout
+
     public function logout(Request $request)
     {
-        Auth::logout(); // hapus sesi login
-        // Invalidasi & regenerasi token session
+        Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+
+        return redirect()->route('login');
     }
 }
