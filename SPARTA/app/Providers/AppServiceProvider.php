@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,7 +19,14 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
-        //
+    { {
+            Gate::define('edit-faktur', function ($user) {
+                return $user->role === 'owner';
+            });
+
+            Gate::define('delete-faktur', function ($user) {
+                return $user->role === 'owner';
+            });
+        }
     }
 }
