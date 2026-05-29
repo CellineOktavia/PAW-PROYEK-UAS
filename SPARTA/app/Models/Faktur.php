@@ -2,15 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Faktur extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
+
         'nomor_faktur',
-        'tanggal',
+        'user_id',
         'total',
-        'user_id'
+        'tanggal',
+
     ];
 
     public function user()

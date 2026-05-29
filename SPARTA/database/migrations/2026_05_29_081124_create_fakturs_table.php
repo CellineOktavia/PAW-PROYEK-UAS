@@ -12,28 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('fakturs', function (Blueprint $table) {
+
             $table->id();
 
             $table->string('nomor_faktur')->unique();
 
-            $table->date('tanggal');
-
-            $table->decimal('total', 15, 2)->default(0);
-
-            $table->enum('status', [
-                'draft',
-                'selesai',
-                'dibatalkan'
-            ])->default('draft');
-
             $table->foreignId('user_id')
-                ->constrained('users')
+                ->constrained()
                 ->cascadeOnDelete();
+
+            $table->decimal('total', 15, 2);
+
+            $table->date('tanggal');
 
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

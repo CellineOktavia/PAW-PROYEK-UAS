@@ -2,109 +2,162 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Supplier;
 use App\Models\Product;
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Gate;
+
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        Gate::authorize('viewAny', Product::class);
-        $title = "Daftar Produk";
-        $products = Product::paginate(10);
-        return view('produk.index', compact('title', 'products'));
+        $search = $request->search;
+
+        $products = Product::query()
+
+            ->when($search, function ($query) use ($search) {
+
+                $query->where(function ($q) use ($search) {
+
+                    $q->where(
+                        'nama_produk',
+                        'like',
+                        "%{$search}%"
+                    )
+
+                        ->orWhere(
+                            'kode_produk',
+                            'like',
+                            "%{$search}%"
+                        );
+                });
+            })
+
+            ->latest()
+
+            ->paginate(10)
+
+            ->withQueryString();
+
+        return view(
+            'produk.index',
+            compact(
+                'products',
+                'search'
+            )
+        );
     }
 
     public function create()
     {
-        // Cek authorization menggunakan Gate
-        Gate::authorize('create-product');
-        $title = "Tambah Produk";
-        return view('produk.create', compact('title'));
+        $suppliers = \App\Models\Supplier::all();
+
+        return view(
+            'produk.create',
+            compact('suppliers')
+        );
     }
 
     public function store(Request $request)
     {
-        // Gate::authorize('create', Product::class);
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'status' => 'required|in:new,used',
-            'is_active' => 'nullable|boolean',
-            'release_date' => 'nullable|date',
-        ], [
-            'name.required' => 'Nama produk wajib diisi.',
-            'name.max' => 'Nama produk maksimal 100 karakter.',
-            'price.required' => 'Harga produk wajib diisi.',
-            'price.numeric' => 'Harga produk harus berupa angka.',
-            'price.min' => 'Harga produk tidak boleh negatif.',
-            'status.required' => 'Status produk wajib dipilih.',
-            'status.in' => 'Status produk harus new atau used.',
-            'release_date.date' => 'Format tanggal rilis tidak valid.',
+
+            'kode_produk' => 'required|unique:products',
+
+            'nama_produk' => 'required',
+
+            'merk' => 'required',
+
+            'supplier_id' => 'nullable|exists:suppliers,id',
+
+            'stok' => 'required|integer|min:0',
+
+            'stok_minimum' => 'required|integer|min:0',
+
+            'harga_beli' => 'required|numeric|min:0',
+
+            'harga_jual' => 'required|numeric|min:0',
+
+            'deskripsi' => 'nullable',
+
         ]);
 
-        $validated['is_active'] = $request->has('is_active') ? 1 : 0;
         Product::create($validated);
-        return redirect()->route('produk.index')
-            ->with('success', 'Produk berhasil ditambahkan.');
+
+        return redirect()
+            ->route('produk.index')
+            ->with(
+                'success',
+                'Produk berhasil ditambahkan'
+            );
     }
 
-    public function show(string $id)
+    public function edit(Product $product)
     {
-        $title = "Detail Produk";
-        $product = Product::findOrFail($id);
-        return view('produk.detail', compact('product', 'title'));
+        $suppliers = Supplier::all();
+
+        return view(
+            'produk.edit',
+            compact(
+                'product',
+                'suppliers'
+            )
+        );
     }
 
-    public function edit(string $id)
-    {
-        Gate::authorize('update-product');
-        $title = "Edit Produk";
-        $product = Product::findOrFail($id);
-        return view('produk.edit', compact('product', 'title'));
-    }
-
-    public function update(Request $request, string $id)
-    {
-
-        $product = Product::findOrFail($id);
-        Gate::authorize('update', $product);
-
+    public function update(
+        Request $request,
+        Product $product
+    ) {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'status' => 'required|in:new,used',
-            'is_active' => 'nullable|boolean',
-            'release_date' => 'nullable|date',
-        ], [
-            'name.required' => 'Nama produk wajib diisi.',
-            'name.max' => 'Nama produk maksimal 100 karakter.',
-            'price.required' => 'Harga produk wajib diisi.',
-            'price.numeric' => 'Harga produk harus berupa angka.',
-            'price.min' => 'Harga produk tidak boleh negatif.',
-            'status.required' => 'Status produk wajib dipilih.',
-            'status.in' => 'Status produk harus new atau used.',
-            'release_date.date' => 'Format tanggal rilis tidak valid.',
-        ]);
 
-        $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+            'kode_produk' =>
+            'required|unique:products,kode_produk,' .
+                $product->id,
+
+            'nama_produk' => 'required',
+
+            'merk' => 'required',
+
+            'supplier_id' =>
+            'nullable|exists:suppliers,id',
+
+            'stok' =>
+            'required|integer|min:0',
+
+            'stok_minimum' =>
+            'required|integer|min:0',
+
+            'harga_beli' =>
+            'required|numeric|min:0',
+
+            'harga_jual' =>
+            'required|numeric|min:0',
+
+            'deskripsi' =>
+            'nullable',
+
+        ]);
 
         $product->update($validated);
 
-        return redirect()->route('produk.index')
-            ->with('success', 'Produk berhasil diperbarui.');
+        return redirect()
+            ->route('produk.index')
+            ->with(
+                'success',
+                'Produk berhasil diperbarui'
+            );
     }
 
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        Gate::authorize('delete-product');
-        $product = Product::findOrFail($id);
         $product->delete();
 
-        return redirect()->route('produk.index')
-            ->with('success', 'Produk berhasil dihapus.');
+        return redirect()
+            ->route('produk.index')
+            ->with(
+                'success',
+                'Produk berhasil dihapus'
+            );
     }
 }

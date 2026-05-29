@@ -1,4 +1,4 @@
-@section('sidebar')
+{{-- @section('sidebar')
 
     <!DOCTYPE html>
     <html lang="id">
@@ -71,4 +71,48 @@
 
     </body>
 
-    </html>
+    </html> --}}
+
+@extends('app.master')
+
+@section('content')
+    <h2 class="text-3xl font-bold mb-6">
+        Dashboard Owner
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div class="bg-white p-6 rounded shadow">
+            <h3 class="text-gray-500">Total Penjualan</h3>
+            <p class="text-3xl font-bold">Rp 0</p>
+        </div>
+
+        <div class="bg-white p-6 rounded shadow">
+            <h3 class="text-gray-500">Total Faktur</h3>
+            <p class="text-3xl font-bold">0</p>
+        </div>
+
+        <div class="bg-white p-6 rounded shadow">
+            <h3 class="text-gray-500">Total Produk</h3>
+            <p class="text-3xl font-bold">0</p>
+        </div>
+
+        <div class="bg-white p-6 rounded shadow">
+            <h3 class="text-gray-500">Supplier</h3>
+            <p class="text-3xl font-bold">0</p>
+        </div>
+
+    </div>
+
+    <div class="bg-white mt-8 p-6 rounded shadow">
+
+        <h3 class="text-xl font-semibold mb-4">
+            Ringkasan Bisnis
+        </h3>
+
+        <p class="text-gray-500">
+            Grafik penjualan dan laporan akan ditampilkan di sini.
+        </p>
+
+    </div>
+@endsection
