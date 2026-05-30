@@ -223,7 +223,7 @@
         .input-icon {
             position: absolute;
             left: 14px;
-            top: 50%;
+            top: 24px;
             transform: translateY(-50%);
             color: var(--sparta-muted);
             font-size: 1rem;
@@ -271,7 +271,7 @@
         .pw-toggle {
             position: absolute;
             right: 13px;
-            top: 50%;
+            top: 24px;
             transform: translateY(-50%);
             background: none;
             border: none;

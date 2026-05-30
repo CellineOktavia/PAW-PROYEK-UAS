@@ -3,151 +3,273 @@
 @section('content')
     <div class="container-fluid">
 
+        {{-- HERO --}}
         <div class="dashboard-hero mb-4">
 
-            <div>
+            <span class="system-badge">
+                SPARTA
+            </span>
 
-                <span class="system-badge">
-                    SPARTA
+            <h1 class="system-title">
+                Sparepart Inventory Management System
+            </h1>
+
+            <p class="system-subtitle">
+                Richie Motor Management Dashboard
+            </p>
+
+            <div class="mt-4">
+
+                <h3 class="welcome-user">
+                    Halo, {{ Auth::user()->name }} 👋
+                </h3>
+
+                <span class="role-badge">
+                    {{ strtoupper(Auth::user()->role) }}
                 </span>
-
-                <h1 class="system-title">
-                    Sparepart Inventory Management System
-                </h1>
-
-                <p class="system-subtitle">
-                    Richie Motor Management Dashboard
-                </p>
-
-                <div class="mt-4">
-                    <h3 class="welcome-user">
-                        Halo, {{ Auth::user()->name }} 👋
-                    </h3>
-
-                    <span class="role-badge">
-                        {{ strtoupper(Auth::user()->role) }}
-                    </span>
-                </div>
 
             </div>
 
         </div>
 
+        {{-- STAT CARD --}}
         <div class="row g-4">
 
-            {{-- Card Produk --}}
             <div class="col-lg-3">
+
                 <a href="{{ route('produk.index') }}" class="stats-link">
+
                     <div class="stats-card primary">
+
                         <i class="bi bi-box-seam"></i>
-                        <h2>245</h2>
+
+                        <h2>{{ $totalProduk }}</h2>
+
                         <p>Total Produk</p>
+
                     </div>
+
                 </a>
+
             </div>
 
-            {{-- Card Supplier --}}
             <div class="col-lg-3">
+
                 <a href="{{ route('supplier.index') }}" class="stats-link">
+
                     <div class="stats-card success">
+
                         <i class="bi bi-truck"></i>
-                        <h2>32</h2>
+
+                        <h2>{{ $totalSupplier }}</h2>
+
                         <p>Supplier</p>
+
                     </div>
+
                 </a>
+
             </div>
 
-            {{-- Card Faktur --}}
             <div class="col-lg-3">
+
                 <a href="{{ route('faktur.index') }}" class="stats-link">
+
                     <div class="stats-card warning">
+
                         <i class="bi bi-receipt"></i>
-                        <h2>18</h2>
-                        <p>Faktur Hari Ini</p>
+
+                        <h2>{{ $totalFaktur }}</h2>
+
+                        <p>Total Faktur</p>
+
                     </div>
+
                 </a>
+
             </div>
 
-            {{-- Card Stok Kritis --}}
             <div class="col-lg-3">
-                <a href="{{ route('produk.index') }}" class="stats-link">
+
+                <a href="{{ route('stok.kritis') }}" class="stats-link">
+
                     <div class="stats-card danger">
+
                         <i class="bi bi-exclamation-circle"></i>
-                        <h2>5</h2>
+
+                        <h2>{{ $stokKritis }}</h2>
+
                         <p>Stok Kritis</p>
+
                     </div>
+
                 </a>
+
             </div>
 
-            <div class="row mt-4 g-4">
+        </div>
 
-                <div class="col-lg-6">
+        {{-- INFO FILTER --}}
+        <div class="alert alert-info mt-4">
 
-                    <div class="dashboard-card">
+            Menampilkan data dari
 
-                        <h5>
-                            <i class="bi bi-box me-2"></i>
-                            Stok Menipis
-                        </h5>
+            <strong>{{ $startDate }}</strong>
 
-                        <table class="table align-middle mt-3">
+            sampai
 
-                            <tr>
-                                <td>Ban Motor IRC</td>
-                                <td>
-                                    <span class="badge bg-danger">
-                                        3 Unit
-                                    </span>
-                                </td>
-                            </tr>
+            <strong>{{ $endDate }}</strong>
 
-                            <tr>
-                                <td>Oli Yamalube</td>
-                                <td>
-                                    <span class="badge bg-warning">
-                                        5 Unit
-                                    </span>
-                                </td>
-                            </tr>
+        </div>
 
-                        </table>
+        {{-- CHART --}}
+        <div class="dashboard-card mt-4">
 
-                    </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
-                </div>
+                <h5>
 
-                <div class="col-lg-6">
+                    <i class="bi bi-bar-chart-fill me-2"></i>
 
-                    <div class="dashboard-card">
+                    Statistik Pendapatan
 
-                        <h5>
-                            <i class="bi bi-clock-history me-2"></i>
-                            Aktivitas Terbaru
-                        </h5>
+                </h5>
 
-                        <ul class="activity-list">
+            </div>
 
-                            <li>
-                                Produk baru ditambahkan
-                            </li>
+            {{-- SHORTCUT FILTER --}}
+            <div class="mb-4">
 
-                            <li>
-                                Supplier baru dibuat
-                            </li>
+                <div class="btn-group">
 
-                            <li>
-                                Faktur INV-001 berhasil dibuat
-                            </li>
+                    <a href="{{ route('dashboard', ['filter' => 'hari']) }}"
+                        class="btn {{ $filter == 'hari' ? 'btn-primary' : 'btn-outline-primary' }}">
 
-                            <li>
-                                Stok produk diperbarui
-                            </li>
+                        Hari Ini
 
-                        </ul>
+                    </a>
 
-                    </div>
+                    <a href="{{ route('dashboard', ['filter' => 'bulan']) }}"
+                        class="btn {{ $filter == 'bulan' ? 'btn-primary' : 'btn-outline-primary' }}">
+
+                        Bulan Ini
+
+                    </a>
+
+                    <a href="{{ route('dashboard', ['filter' => 'tahun']) }}"
+                        class="btn {{ $filter == 'tahun' ? 'btn-primary' : 'btn-outline-primary' }}">
+
+                        Tahun Ini
+
+                    </a>
 
                 </div>
 
             </div>
-        @endsection
+
+            {{-- CUSTOM FILTER --}}
+            <form method="GET" action="{{ route('dashboard') }}" class="row g-3 mb-4">
+
+                <input type="hidden" name="filter" value="custom">
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+
+                        Tanggal Awal
+
+                    </label>
+
+                    <input type="date" name="start_date" value="{{ $startDate }}" class="form-control">
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+
+                        Tanggal Akhir
+
+                    </label>
+
+                    <input type="date" name="end_date" value="{{ $endDate }}" class="form-control">
+
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end">
+
+                    <button type="submit" class="btn btn-success w-100">
+
+                        Terapkan Filter
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <canvas id="incomeChart" height="120"></canvas>
+
+        </div>
+
+    </div>
+@endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const labels =
+            {!! json_encode($pendapatanHarian->pluck('tanggal')->values()) !!};
+
+        const values =
+            {!! json_encode($pendapatanHarian->pluck('total')->values()) !!};
+
+        const ctx =
+            document.getElementById('incomeChart');
+
+        if (ctx) {
+
+            new Chart(ctx, {
+
+                type: 'bar',
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [{
+
+                        label: 'Pendapatan (Rp)',
+
+                        data: values,
+
+                        borderWidth: 1
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+    </script>
+@endpush

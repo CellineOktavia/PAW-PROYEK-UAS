@@ -26,7 +26,10 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt(
+            $credentials,
+            $request->filled('remember')
+        )) {
 
             return back()
                 ->withErrors([

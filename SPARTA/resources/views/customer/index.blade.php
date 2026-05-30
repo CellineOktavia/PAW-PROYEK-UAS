@@ -1,30 +1,32 @@
 @extends('app.master')
 
 @section('content')
-    {{-- Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
 
         <div>
 
             <h2 class="fw-bold">
-                Data Produk
+
+                Data Pelanggan
+
             </h2>
 
             <p class="text-muted">
-                Kelola seluruh produk Richie Motor
+
+                Kelola seluruh pelanggan Richie Motor
+
             </p>
 
         </div>
 
-        <a href="{{ route('produk.create') }}" class="btn btn-primary">
+        <a href="{{ route('customer.create') }}" class="btn btn-primary">
 
-            + Tambah Produk
+            + Tambah Pelanggan
 
         </a>
 
     </div>
 
-    {{-- Alert Success --}}
     @if (session('success'))
         <div class="alert alert-success">
 
@@ -33,25 +35,24 @@
         </div>
     @endif
 
-    {{-- Cari Produk --}}
     <div class="card border-0 shadow-sm mb-4">
 
         <div class="card-body">
 
-            <form method="GET" action="{{ route('produk.index') }}">
+            <form method="GET" action="{{ route('customer.index') }}">
 
                 <div class="row">
 
                     <div class="col-md-10">
 
                         <input type="text" name="search" class="form-control"
-                            placeholder="Cari kode atau nama produk..." value="{{ request('search') }}">
+                            placeholder="Cari kode atau nama pelanggan..." value="{{ request('search') }}">
 
                     </div>
 
                     <div class="col-md-2">
 
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button class="btn btn-primary w-100">
 
                             Cari
 
@@ -67,7 +68,6 @@
 
     </div>
 
-    {{-- Table Produk --}}
     <div class="card shadow-sm">
 
         <div class="card-body">
@@ -81,18 +81,11 @@
                         <tr>
 
                             <th>Kode</th>
-
-                            <th>Nama Produk</th>
-
-                            <th>Merk</th>
-
-                            <th>Stok</th>
-
-                            <th>Harga</th>
-
-                            <th width="180">
-                                Aksi
-                            </th>
+                            <th>Nama</th>
+                            <th>Telepon</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th width="180">Aksi</th>
 
                         </tr>
 
@@ -100,39 +93,45 @@
 
                     <tbody>
 
-                        @forelse($products as $product)
+                        @forelse($customers as $customer)
                             <tr>
 
                                 <td>
 
-                                    {{ $product->kode_produk }}
+                                    {{ $customer->kode_customer }}
 
                                 </td>
 
                                 <td>
 
-                                    {{ $product->nama_produk }}
+                                    {{ $customer->nama_customer }}
 
                                 </td>
 
                                 <td>
 
-                                    {{ $product->merk }}
+                                    {{ $customer->telepon }}
 
                                 </td>
 
                                 <td>
 
-                                    @if ($product->stok <= $product->stok_minimum)
-                                        <span class="badge bg-danger">
+                                    {{ $customer->email }}
 
-                                            {{ $product->stok }}
+                                </td>
+
+                                <td>
+
+                                    @if ($customer->aktif)
+                                        <span class="badge bg-success">
+
+                                            Aktif
 
                                         </span>
                                     @else
-                                        <span class="badge bg-success">
+                                        <span class="badge bg-danger">
 
-                                            {{ $product->stok }}
+                                            Nonaktif
 
                                         </span>
                                     @endif
@@ -141,28 +140,22 @@
 
                                 <td>
 
-                                    Rp
-                                    {{ number_format($product->harga_jual, 0, ',', '.') }}
-
-                                </td>
-
-                                <td>
-
-                                    <a href="{{ route('produk.edit', $product->id) }}" class="btn btn-warning btn-sm">
+                                    <a href="{{ route('customer.edit', $customer) }}"
+                                        class="btn btn-warning btn-sm">
 
                                         Edit
 
                                     </a>
 
-                                    <form action="{{ route('produk.destroy', $product->id) }}" method="POST"
-                                        class="d-inline">
+                                    <form
+                                        action="{{ route('customer.destroy', $customer) }}"
+                                        method="POST" class="d-inline">
 
                                         @csrf
-
                                         @method('DELETE')
 
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Yakin ingin menghapus produk ini?')">
+                                        <button onclick="return confirm('Hapus customer ini?')"
+                                            class="btn btn-danger btn-sm">
 
                                             Hapus
 
@@ -178,9 +171,9 @@
 
                             <tr>
 
-                                <td colspan="6" class="text-center text-muted">
+                                <td colspan="6" class="text-center">
 
-                                    Tidak ada data produk
+                                    Tidak ada data pelanggan
 
                                 </td>
 
@@ -193,13 +186,13 @@
 
             </div>
 
+            <div class="mt-3">
+
+                {{ $customers->links() }}
+
+            </div>
+
         </div>
-
-    </div>
-
-    <div class="mt-4">
-
-        {{ $products->links() }}
 
     </div>
 @endsection

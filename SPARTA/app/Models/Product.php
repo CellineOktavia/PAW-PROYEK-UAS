@@ -29,4 +29,23 @@ class Product extends Model
             Supplier::class
         );
     }
+
+    public function detailFakturs()
+    {
+        return $this->hasMany(DetailFaktur::class);
+    }
+
+    public function stockMovements()
+    {
+        return $this->hasMany(
+            StockMovement::class
+        );
+    }
+
+    public function detailPenjualans()
+    {
+        return $this->hasMany(
+            DetailPenjualan::class
+        );
+    }
 }

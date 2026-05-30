@@ -156,11 +156,112 @@
             transform: translateY(-6px);
             box-shadow: 0 15px 35px rgba(0, 0, 0, .12);
         }
+
+        .list-group-item {
+            border: none;
+            padding: 12px 18px;
+            transition: background-color .25s ease,
+                color .25s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .list-group-item.active {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background-color: #dc3545 !important;
+            color: white !important;
+        }
+
+        .top-navbar {
+            background: #1f2937;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .brand-title {
+            color: #2563eb;
+            font-weight: 700;
+            font-size: 32px;
+        }
+
+        .brand-subtitle {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .user-info {
+            color: white;
+            text-align: right;
+        }
+
+        .header-brand h2 {
+            margin: 0;
+            color: #3b82f6;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .header-brand small {
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .user-detail {
+            line-height: 1.2;
+        }
+
+        .user-detail .name {
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-detail .role {
+            color: #cbd5e1;
+            font-size: 12px;
+        }
+
+        .logout-btn-top {
+            border-radius: 10px;
+            padding: 8px 18px;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark shadow-sm py-3">
         <div class="container-fluid">
             @include('app.navbar')
         </div>
@@ -181,6 +282,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
+    <script>
+        function confirmLogout() {
+            return confirm(
+                'Apakah Anda yakin ingin logout?'
+            );
+        }
+    </script>
+    @stack('scripts')
+
 </body>
 
 </html>

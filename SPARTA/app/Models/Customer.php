@@ -5,30 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model
+class Customer extends Model
 {
+    /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory;
-
     protected $fillable = [
-        'kode_supplier',
-        'nama_supplier',
-        'nama_kontak',
+
+        'kode_customer',
+        'nama_customer',
         'telepon',
         'email',
         'alamat',
         'aktif',
+
     ];
 
-    public function products()
+    public function penjualans()
     {
         return $this->hasMany(
-            Product::class,
-            'supplier_id'
+            Penjualan::class
         );
-    }
-
-    public function fakturs()
-    {
-        return $this->hasMany(Faktur::class);
     }
 }

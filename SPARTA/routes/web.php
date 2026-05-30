@@ -6,6 +6,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\FakturController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PenjualanController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', function () {
     return view('landing-page');
@@ -23,6 +28,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth')->group(function () {
 
+    // Dashboard Route
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -109,11 +115,161 @@ Route::middleware('auth')->group(function () {
     Route::get('/faktur', [FakturController::class, 'index'])
         ->name('faktur.index');
 
-    // Laporan Routes
-    Route::get('/laporan', function () {
-        return view('laporan.index');
-    })->name('laporan.index');
+    Route::get(
+        '/faktur/create',
+        [FakturController::class, 'create']
+    )
+        ->name('faktur.create');
 
+    Route::post(
+        '/faktur',
+        [FakturController::class, 'store']
+    )
+        ->name('faktur.store');
+
+    Route::get('/faktur/{faktur}', [FakturController::class, 'show'])
+        ->name('faktur.show');
+
+    Route::delete('/faktur/{faktur}', [FakturController::class, 'destroy'])
+        ->name('faktur.destroy');
+
+    // Laporan Routes
+    Route::get(
+        '/laporan',
+        [LaporanController::class, 'index']
+    )->name('laporan.index');
+
+    Route::get(
+        '/laporan/produk',
+        [LaporanController::class, 'produk']
+    )->name('laporan.produk');
+
+    Route::get(
+        '/laporan/supplier',
+        [LaporanController::class, 'supplier']
+    )->name('laporan.supplier');
+
+    Route::get(
+        '/laporan/customer',
+        [LaporanController::class, 'customer']
+    )->name('laporan.customer');
+
+    Route::get(
+        '/laporan/pembelian',
+        [LaporanController::class, 'pembelian']
+    )->name('laporan.pembelian');
+
+    Route::get(
+        '/laporan/penjualan',
+        [LaporanController::class, 'penjualan']
+    )->name('laporan.penjualan');
+
+    Route::get(
+        '/laporan/stok',
+        [LaporanController::class, 'stok']
+    )->name('laporan.stok');
+
+    // Laporan Export Routes
+    Route::get(
+        '/laporan/produk/pdf',
+        [LaporanController::class, 'produkPdf']
+    )->name('laporan.produk.pdf');
+
+    Route::get(
+        '/laporan/supplier/pdf',
+        [LaporanController::class, 'supplierPdf']
+    )->name('laporan.supplier.pdf');
+
+    Route::get(
+        '/laporan/customer/pdf',
+        [LaporanController::class, 'customerPdf']
+    )->name('laporan.customer.pdf');
+
+    Route::get(
+        '/laporan/pembelian/pdf',
+        [LaporanController::class, 'pembelianPdf']
+    )->name('laporan.pembelian.pdf');
+
+    Route::get(
+        '/laporan/penjualan/pdf',
+        [LaporanController::class, 'penjualanPdf']
+    )->name('laporan.penjualan.pdf');
+
+    Route::get(
+        '/laporan/stok/pdf',
+        [LaporanController::class, 'stokPdf']
+    )->name('laporan.stok.pdf');
+
+    // Stock Routes
+    Route::get(
+        '/stok-kritis',
+        [StockController::class, 'critical']
+    )->name('stok.kritis');
+
+    Route::get(
+        '/riwayat-stok',
+        [StockMovementController::class, 'index']
+    )->name('stok.riwayat');
+
+
+    // Customer Routes
+    Route::get(
+        '/customer',
+        [CustomerController::class, 'index']
+    )->name('customer.index');
+
+    Route::get(
+        '/customer/create',
+        [CustomerController::class, 'create']
+    )->name('customer.create');
+
+    Route::post(
+        '/customer',
+        [CustomerController::class, 'store']
+    )->name('customer.store');
+
+    Route::get(
+        '/customer/{customer}/edit',
+        [CustomerController::class, 'edit']
+    )->name('customer.edit');
+
+    Route::put(
+        '/customer/{customer}',
+        [CustomerController::class, 'update']
+    )->name('customer.update');
+
+    Route::delete(
+        '/customer/{customer}',
+        [CustomerController::class, 'destroy']
+    )->name('customer.destroy');
+
+    // Penjualan Routes
+    Route::get(
+        '/penjualan',
+        [PenjualanController::class, 'index']
+    )->name('penjualan.index');
+
+    Route::get(
+        '/penjualan/create',
+        [PenjualanController::class, 'create']
+    )->name('penjualan.create');
+
+    Route::post(
+        '/penjualan',
+        [PenjualanController::class, 'store']
+    )->name('penjualan.store');
+
+    Route::get(
+        '/penjualan/{penjualan}',
+        [PenjualanController::class, 'show']
+    )->name('penjualan.show');
+
+    Route::delete(
+        '/penjualan/{penjualan}',
+        [PenjualanController::class, 'destroy']
+    )->name('penjualan.destroy');
+
+    // Logout Route
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 });

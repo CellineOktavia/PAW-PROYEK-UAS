@@ -1,37 +1,55 @@
 <div class="d-flex justify-content-between align-items-center w-100">
 
-    <div>
+    {{-- Logo --}}
+    <div class="header-brand">
 
-        <h4 class="fw-bold text-primary mb-0">
+        <h2>
+
             SPARTA
-        </h4>
 
-        <small class="text-muted">
-            Richie Motor Inventory Management System
+        </h2>
+
+        <small>
+
+            Sparepart Inventory Management System
+
         </small>
 
     </div>
 
     @auth
 
-        <div class="d-flex align-items-center gap-3">
+        <div class="user-panel">
 
-            <div class="text-end">
+            <div>
 
-                <div class="fw-bold">
-                    {{ Auth::user()->name }}
-                </div>
-
-                <small class="text-muted">
-                    {{ strtoupper(Auth::user()->role) }}
-                </small>
+                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
 
             </div>
 
-            <form action="{{ route('logout') }}" method="POST">
+            <div class="user-detail">
+
+                <div class="name">
+
+                    {{ Auth::user()->name }}
+
+                </div>
+
+                <div class="role">
+
+                    {{ strtoupper(Auth::user()->role) }}
+
+                </div>
+
+            </div>
+
+            <form action="{{ route('logout') }}" method="POST" onsubmit="return confirmLogout()">
+
                 @csrf
 
-                <button type="submit" class="btn btn-danger rounded-3 px-3">
+                <button type="submit" class="btn btn-danger logout-btn-top">
+
+                    <i class="bi bi-box-arrow-right"></i>
 
                     Logout
 
