@@ -63,12 +63,53 @@ Route::middleware('auth')->group(function () {
     )
         ->name('produk.destroy');
 
-    Route::get('/supplier', [SupplierController::class, 'index'])
+    // Supplier Routes
+    Route::get(
+        '/supplier',
+        [SupplierController::class, 'index']
+    )
         ->name('supplier.index');
 
+    Route::get(
+        '/supplier/create',
+        [SupplierController::class, 'create']
+    )
+        ->name('supplier.create');
+
+    Route::post(
+        '/supplier',
+        [SupplierController::class, 'store']
+    )
+        ->name('supplier.store');
+
+    Route::get(
+        '/supplier/{supplier}/edit',
+        [SupplierController::class, 'edit']
+    )
+        ->name('supplier.edit');
+
+    Route::put(
+        '/supplier/{supplier}',
+        [SupplierController::class, 'update']
+    )
+        ->name('supplier.update');
+
+    Route::delete(
+        '/supplier/{supplier}',
+        [SupplierController::class, 'destroy']
+    )
+        ->name('supplier.destroy');
+
+    Route::get(
+        '/supplier/{supplier}',
+        [SupplierController::class, 'show']
+    )->name('supplier.show');
+
+    // Faktur Routes
     Route::get('/faktur', [FakturController::class, 'index'])
         ->name('faktur.index');
 
+    // Laporan Routes
     Route::get('/laporan', function () {
         return view('laporan.index');
     })->name('laporan.index');
