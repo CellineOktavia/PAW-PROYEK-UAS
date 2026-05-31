@@ -11,6 +11,7 @@ use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\OwnerDashboardController;
 
 Route::get('/', function () {
     return view('landing-page');
@@ -21,17 +22,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/register', [AuthController::class, 'showRegister'])
-    ->name('register');
-
-Route::post('/register', [AuthController::class, 'register']);
-
 Route::middleware('auth')->group(function () {
-
-    // Dashboard Route
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-
     // Product Routes
     Route::get(
         '/produk',
@@ -132,6 +123,16 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/faktur/{faktur}', [FakturController::class, 'destroy'])
         ->name('faktur.destroy');
+
+    Route::get(
+        '/faktur/{faktur}/edit',
+        [FakturController::class, 'edit']
+    )->name('faktur.edit');
+
+    Route::put(
+        '/faktur/{faktur}',
+        [FakturController::class, 'update']
+    )->name('faktur.update');
 
     // Laporan Routes
     Route::get(
@@ -269,7 +270,41 @@ Route::middleware('auth')->group(function () {
         [PenjualanController::class, 'destroy']
     )->name('penjualan.destroy');
 
+    Route::get(
+        '/penjualan/{penjualan}/edit',
+        [PenjualanController::class, 'edit']
+    )->name('penjualan.edit');
+
+    Route::put(
+        '/penjualan/{penjualan}',
+        [PenjualanController::class, 'update']
+    )->name('penjualan.update');
+
     // Logout Route
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
+});
+
+// Admin Dashboard Routes
+Route::middleware([
+    'auth',
+    'role:admin'
+])->group(function () {
+
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
+});
+
+// Owner Dashboard Routes
+Route::middleware([
+    'auth',
+    'role:owner'
+])->group(function () {
+
+    Route::get(
+        '/owner/dashboard',
+        [OwnerDashboardController::class, 'index']
+    )->name('owner.dashboard');
 });

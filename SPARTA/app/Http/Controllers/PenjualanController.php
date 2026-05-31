@@ -12,20 +12,35 @@ use Illuminate\Support\Facades\Auth;
 
 class PenjualanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $penjualans = Penjualan::with(
-            'customer'
-        )
+        $search = $request->search;
+
+        $penjualans = Penjualan::with('customer')
+
+            ->when($search, function ($query) use ($search) {
+
+                $query->where(
+                    'nomor_penjualan',
+                    'like',
+                    "%{$search}%"
+                );
+            })
+
             ->latest()
-            ->paginate(10);
+
+            ->paginate(10)
+
+            ->withQueryString();
 
         return view(
             'penjualan.index',
-            compact('penjualans')
+            compact(
+                'penjualans',
+                'search'
+            )
         );
     }
-
     public function create()
     {
         $customers = Customer::all();
@@ -118,6 +133,11 @@ class PenjualanController extends Controller
 
         ]);
 
+        $product->decrement(
+            'stok',
+            $request->qty
+        );
+
         // Kurangi stok otomatis
         StockMovement::create([
 
@@ -160,9 +180,167 @@ class PenjualanController extends Controller
         );
     }
 
+    public function edit(
+        Penjualan $penjualan
+    ) {
+        if (
+            Auth::user()->role !== 'owner'
+        ) {
+            abort(403);
+        }
+
+        $customers =
+            Customer::all();
+
+        $products =
+            Product::all();
+
+        $detail = $penjualan
+            ->detailPenjualans
+            ->first();
+
+        if (!$detail) {
+
+            return redirect()
+                ->route('penjualan.index')
+                ->with(
+                    'error',
+                    'Detail penjualan tidak ditemukan'
+                );
+        }
+        return view(
+            'penjualan.edit',
+            compact(
+                'penjualan',
+                'customers',
+                'products',
+                'detail'
+            )
+        );
+    }
+
+    public function update(
+        Request $request,
+        Penjualan $penjualan
+    ) {
+        if (
+            Auth::user()->role !== 'owner'
+        ) {
+            abort(403);
+        }
+
+        $request->validate([
+
+            'customer_id' =>
+            'required',
+
+            'product_id' =>
+            'required',
+
+            'qty' =>
+            'required|integer|min:1',
+
+            'tanggal' =>
+            'required'
+
+        ]);
+
+        $detail =
+            $penjualan
+            ->detailPenjualans
+            ->first();
+
+        $oldProduct =
+            Product::findOrFail(
+                $detail->product_id
+            );
+
+        /*
+     * Kembalikan stok lama
+     */
+        $oldProduct->increment(
+            'stok',
+            $detail->qty
+        );
+
+        $newProduct =
+            Product::findOrFail(
+                $request->product_id
+            );
+
+        if (
+            $newProduct->stok <
+            $request->qty
+        ) {
+
+            return back()
+                ->with(
+                    'error',
+                    'Stok tidak cukup'
+                );
+        }
+
+        /*
+     * Kurangi stok baru
+     */
+        $newProduct->decrement(
+            'stok',
+            $request->qty
+        );
+
+        $subtotal =
+            $request->qty *
+            $newProduct->harga_jual;
+
+        $penjualan->update([
+
+            'customer_id' =>
+            $request->customer_id,
+
+            'tanggal' =>
+            $request->tanggal,
+
+            'total' =>
+            $subtotal
+
+        ]);
+
+        $detail->update([
+
+            'product_id' =>
+            $request->product_id,
+
+            'qty' =>
+            $request->qty,
+
+            'harga' =>
+            $newProduct->harga_jual,
+
+            'subtotal' =>
+            $subtotal
+
+        ]);
+
+        return redirect()
+            ->route(
+                'penjualan.index'
+            )
+            ->with(
+                'success',
+                'Penjualan berhasil diperbarui'
+            );
+    }
+
     public function destroy(
         Penjualan $penjualan
     ) {
+        if (
+            Auth::user()->role !== 'owner'
+        ) {
+
+            abort(403);
+        }
+
         foreach (
             $penjualan->detailPenjualans
             as $detail

@@ -1,84 +1,138 @@
 <div class="list-group list-group-flush">
 
-    {{-- DASHBOARD --}}
-    <a href="/dashboard" class="list-group-item list-group-item-action {{ request()->is('dashboard') ? 'active' : '' }}">
-        📊 Dashboard
-    </a>
 
-    {{-- MASTER DATA --}}
+    {{-- OWNER --}}
+    @if (Auth::user()->role == 'owner')
+        <a href="{{ route('owner.dashboard') }}"
+            class="list-group-item list-group-item-action {{ request()->is('owner/dashboard') ? 'active' : '' }}">
+            📊 Dashboard Owner
+        </a>
 
-    <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
-        Master Data
-    </div>
+        {{-- TRANSAKSI --}}
+        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+            Transaksi
+        </div>
 
-    <a
-        href="{{ route('customer.index') }}"class="list-group-item list-group-item-action {{ request()->routeIs('customer.*') ? 'active' : '' }}">
-        👤 Pelanggan
-    </a>
-    <a href="/produk" class="list-group-item list-group-item-action {{ request()->is('produk*') ? 'active' : '' }}">
-        📦 Produk
-    </a>
+        <a href="/penjualan"
+            class="list-group-item list-group-item-action {{ request()->is('penjualan*') ? 'active' : '' }}">
+            🧾 Data Penjualan
+        </a>
 
-    <a href="/supplier" class="list-group-item list-group-item-action {{ request()->is('supplier*') ? 'active' : '' }}">
-        🚚 Supplier
-    </a>
+        <a href="/faktur" class="list-group-item list-group-item-action {{ request()->is('faktur*') ? 'active' : '' }}">
+            🛒 Data Pembelian
+        </a>
 
-    @yield('submenu-supplier')
+        {{-- LAPORAN --}}
+        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+            Laporan
+        </div>
 
-    {{-- Pembelian Toko --}}
-    <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
-        Pembelian
-    </div>
+        <a href="/laporan/penjualan"
+            class="list-group-item list-group-item-action {{ request()->is('laporan/penjualan*') ? 'active' : '' }}">
+            📈 Laporan Penjualan
+        </a>
 
-    <a href="/faktur" class="list-group-item list-group-item-action {{ request()->is('faktur*') ? 'active' : '' }}">
-        🛒 Faktur Pembelian
-    </a>
+        <a href="/laporan/pembelian"
+            class="list-group-item list-group-item-action {{ request()->is('laporan/pembelian*') ? 'active' : '' }}">
+            📊 Laporan Pembelian
+        </a>
 
-    @yield('submenu-faktur')
+        <a href="/laporan/stok"
+            class="list-group-item list-group-item-action {{ request()->is('laporan/stok*') ? 'active' : '' }}">
+            📦 Laporan Stok
+        </a>
 
-    <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <a href="/laporan/customer"
+            class="list-group-item list-group-item-action {{ request()->is('laporan/customer*') ? 'active' : '' }}">
+            👤 Laporan Customer
+        </a>
 
-        Penjualan
+        <a href="/laporan/supplier"
+            class="list-group-item list-group-item-action {{ request()->is('laporan/supplier*') ? 'active' : '' }}">
+            🚚 Laporan Supplier
+        </a>
+    @endif
 
-    </div>
+    {{-- ADMIN --}}
+    @if (Auth::user()->role == 'admin')
+        {{-- DASHBOARD --}}
+        <a href="/dashboard"
+            class="list-group-item list-group-item-action {{ request()->is('dashboard') ? 'active' : '' }}">
+            📊 Dashboard Admin
+        </a>
 
-    <a href="/penjualan"
-        class="list-group-item list-group-item-action {{ request()->is('penjualan*') ? 'active' : '' }}">
+        {{-- MASTER DATA --}}
+        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+            Master Data
+        </div>
 
-        🧾 Faktur Penjualan
+        <a href="{{ route('customer.index') }}"
+            class="list-group-item list-group-item-action {{ request()->routeIs('customer.*') ? 'active' : '' }}">
+            👤 Pelanggan
+        </a>
 
-    </a>
+        <a href="/produk"
+            class="list-group-item list-group-item-action {{ request()->is('produk*') ? 'active' : '' }}">
+            📦 Produk
+        </a>
 
-    {{-- INVENTORY --}}
-    <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
-        Inventory
-    </div>
+        <a href="/supplier"
+            class="list-group-item list-group-item-action {{ request()->is('supplier*') ? 'active' : '' }}">
+            🚚 Supplier
+        </a>
 
-    <a href="/stok-kritis"
-        class="list-group-item list-group-item-action {{ request()->is('stok-kritis*') ? 'active' : '' }}">
-        ⚠️ Stok Kritis
-    </a>
+        {{-- PEMBELIAN --}}
+        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+            Pembelian
+        </div>
 
-    <a href="/riwayat-stok"
-        class="list-group-item list-group-item-action {{ request()->is('riwayat-stok*') ? 'active' : '' }}">
-        📈 Riwayat Stok
-    </a>
+        <a href="/faktur"
+            class="list-group-item list-group-item-action {{ request()->is('faktur*') ? 'active' : '' }}">
+            🛒 Faktur Pembelian
+        </a>
 
-    {{-- LAPORAN --}}
-    <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
-        Laporan
-    </div>
+        {{-- PENJUALAN --}}
+        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+            Penjualan
+        </div>
 
-    <a href="/laporan" class="list-group-item list-group-item-action {{ request()->is('laporan*') ? 'active' : '' }}">
-        📑 Laporan
-    </a>
+        <a href="/penjualan"
+            class="list-group-item list-group-item-action {{ request()->is('penjualan*') ? 'active' : '' }}">
+            🧾 Faktur Penjualan
+        </a>
+
+        {{-- INVENTORY --}}
+        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+            Inventory
+        </div>
+
+        <a href="/stok-kritis"
+            class="list-group-item list-group-item-action {{ request()->is('stok-kritis*') ? 'active' : '' }}">
+            ⚠️ Stok Kritis
+        </a>
+
+        <a href="/riwayat-stok"
+            class="list-group-item list-group-item-action {{ request()->is('riwayat-stok*') ? 'active' : '' }}">
+            📈 Riwayat Stok
+        </a>
+
+        {{-- LAPORAN --}}
+        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+            Laporan
+        </div>
+
+        <a href="/laporan"
+            class="list-group-item list-group-item-action {{ request()->is('laporan*') ? 'active' : '' }}">
+            📑 Laporan
+        </a>
+    @endif
 
     {{-- AKUN --}}
     <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
         Akun
     </div>
 
-    <form action="{{ route('logout') }}" method="POST" onsubmit="return confirmLogout()">
+    <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="list-group-item list-group-item-action logout-btn">
             🚪 Logout

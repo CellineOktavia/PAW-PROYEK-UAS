@@ -539,13 +539,6 @@
                     <span id="loginText">Masuk</span>
                 </button>
             </form>
-
-            <div class="divider">atau</div>
-
-            <div class="register-cta">
-                Belum punya akun?
-                <a href="{{ route('register') }}">Daftar sekarang &rarr;</a>
-            </div>
         </div>
 
         <p class="auth-footer">

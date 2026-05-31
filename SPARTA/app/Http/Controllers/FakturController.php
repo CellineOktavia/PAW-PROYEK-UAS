@@ -169,6 +169,10 @@ class FakturController extends Controller
 
     public function destroy(Faktur $faktur)
     {
+        if (Auth::user()->role !== 'owner') {
+
+            abort(403);
+        }
         foreach (
             $faktur->detailFakturs
             as $detail
@@ -207,6 +211,68 @@ class FakturController extends Controller
             ->with(
                 'success',
                 'Faktur berhasil dihapus'
+            );
+    }
+
+    public function edit(Faktur $faktur)
+    {
+        if (Auth::user()->role !== 'owner') {
+
+            abort(403);
+        }
+
+        $suppliers = Supplier::all();
+
+        $products = Product::all();
+
+        $faktur->load(
+            'detailFakturs'
+        );
+
+        return view(
+            'faktur.edit',
+            compact(
+                'faktur',
+                'suppliers',
+                'products'
+            )
+        );
+    }
+
+    public function update(
+        Request $request,
+        Faktur $faktur
+    ) {
+        if (Auth::user()->role !== 'owner') {
+
+            abort(403);
+        }
+
+        $request->validate([
+
+            'supplier_id' =>
+            'required|exists:suppliers,id',
+
+            'tanggal' =>
+            'required|date',
+
+        ]);
+
+        $faktur->update([
+
+            'supplier_id' =>
+            $request->supplier_id,
+
+            'tanggal' =>
+            $request->tanggal,
+
+        ]);
+
+        return redirect()
+            ->route('faktur.index')
+            ->with(
+                'success',
+                'Faktur berhasil diperbarui'
             );
     }
 }
