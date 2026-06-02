@@ -126,16 +126,4 @@
             📑 Laporan
         </a>
     @endif
-
-    {{-- AKUN --}}
-    <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
-        Akun
-    </div>
-
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="list-group-item list-group-item-action logout-btn">
-            🚪 Logout
-        </button>
-    </form>
 </div>
