@@ -26,7 +26,7 @@ class OwnerDashboardController extends Controller
         $profit = $totalPenjualan - $totalPembelian;
 
         $pendapatanBulanan = Penjualan::select(
-            DB::raw("strftime('%m', tanggal) as bulan"),
+            DB::raw("DATE_FORMAT(tanggal, '%Y-%m') as bulan"),
             DB::raw('SUM(total) as total')
         )
             ->groupBy('bulan')

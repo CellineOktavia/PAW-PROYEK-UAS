@@ -123,153 +123,100 @@
         </div>
 
         {{-- CHART --}}
-        <div class="dashboard-card mt-4">
+<div class="dashboard-card mt-4">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <h5>
-
-                    <i class="bi bi-bar-chart-fill me-2"></i>
-
-                    Statistik Pendapatan
-
-                </h5>
-
-            </div>
-
-            {{-- SHORTCUT FILTER --}}
-            <div class="mb-4">
-
-                <div class="btn-group">
-
-                    <a href="{{ route('dashboard', ['filter' => 'hari']) }}"
-                        class="btn {{ $filter == 'hari' ? 'btn-primary' : 'btn-outline-primary' }}">
-
-                        Hari Ini
-
-                    </a>
-
-                    <a href="{{ route('dashboard', ['filter' => 'bulan']) }}"
-                        class="btn {{ $filter == 'bulan' ? 'btn-primary' : 'btn-outline-primary' }}">
-
-                        Bulan Ini
-
-                    </a>
-
-                    <a href="{{ route('dashboard', ['filter' => 'tahun']) }}"
-                        class="btn {{ $filter == 'tahun' ? 'btn-primary' : 'btn-outline-primary' }}">
-
-                        Tahun Ini
-
-                    </a>
-
-                </div>
-
-            </div>
-
-            {{-- CUSTOM FILTER --}}
-            <form method="GET" action="{{ route('dashboard') }}" class="row g-3 mb-4">
-
-                <input type="hidden" name="filter" value="custom">
-
-                <div class="col-md-4">
-
-                    <label class="form-label">
-
-                        Tanggal Awal
-
-                    </label>
-
-                    <input type="date" name="start_date" value="{{ $startDate }}" class="form-control">
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="form-label">
-
-                        Tanggal Akhir
-
-                    </label>
-
-                    <input type="date" name="end_date" value="{{ $endDate }}" class="form-control">
-
-                </div>
-
-                <div class="col-md-4 d-flex align-items-end">
-
-                    <button type="submit" class="btn btn-success w-100">
-
-                        Terapkan Filter
-
-                    </button>
-
-                </div>
-
-            </form>
-
-            <canvas id="incomeChart" height="120"></canvas>
-
-        </div>
-
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>
+            <i class="bi bi-bar-chart-fill me-2"></i>
+            Statistik Pendapatan
+        </h5>
     </div>
+
+    {{-- SHORTCUT FILTER --}}
+    <div class="mb-4">
+        <div class="btn-group">
+            <a href="{{ route('dashboard', ['filter' => 'hari']) }}"
+                class="btn {{ $filter == 'hari' ? 'btn-primary' : 'btn-outline-primary' }}">
+                Hari Ini
+            </a>
+            <a href="{{ route('dashboard', ['filter' => 'bulan']) }}"
+                class="btn {{ $filter == 'bulan' ? 'btn-primary' : 'btn-outline-primary' }}">
+                Bulan Ini
+            </a>
+            <a href="{{ route('dashboard', ['filter' => 'tahun']) }}"
+                class="btn {{ $filter == 'tahun' ? 'btn-primary' : 'btn-outline-primary' }}">
+                Tahun Ini
+            </a>
+        </div>
+    </div>
+
+    {{-- CUSTOM FILTER --}}
+    <form method="GET" action="{{ route('dashboard') }}" class="row g-3 mb-4">
+        <input type="hidden" name="filter" value="custom">
+        <div class="col-md-4">
+            <label class="form-label">Tanggal Awal</label>
+            <input type="date" name="start_date" value="{{ $startDate }}" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Tanggal Akhir</label>
+            <input type="date" name="end_date" value="{{ $endDate }}" class="form-control">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">Terapkan Filter</button>
+        </div>
+    </form>
+
+    {{-- ✅ FIX: Bungkus canvas dalam div dengan tinggi tetap --}}
+    <div style="position: relative; height: 320px; width: 100%;">
+        <canvas id="incomeChart"></canvas>
+    </div>
+
+</div>
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
-        const labels =
-            {!! json_encode($pendapatanHarian->pluck('tanggal')->values()) !!};
+        const labels = {!! json_encode($pendapatanHarian->pluck('tanggal')->values()) !!};
+        const values = {!! json_encode($pendapatanHarian->pluck('total')->values()) !!};
 
-        const values =
-            {!! json_encode($pendapatanHarian->pluck('total')->values()) !!};
-
-        const ctx =
-            document.getElementById('incomeChart');
+        const ctx = document.getElementById('incomeChart');
 
         if (ctx) {
-
             new Chart(ctx, {
-
                 type: 'bar',
-
                 data: {
-
                     labels: labels,
-
                     datasets: [{
-
                         label: 'Pendapatan (Rp)',
-
                         data: values,
-
-                        borderWidth: 1
-
+                        backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4,
                     }]
-
                 },
-
                 options: {
-
                     responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    scales: {
-
-                        y: {
-
-                            beginAtZero: true
-
+                    maintainAspectRatio: false,  // ✅ Wajib false supaya ikut tinggi container
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => 'Rp ' + ctx.raw.toLocaleString('id-ID')
+                            }
                         }
-
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (val) => 'Rp ' + val.toLocaleString('id-ID')
+                            }
+                        }
                     }
-
                 }
-
             });
-
         }
     </script>
 @endpush
