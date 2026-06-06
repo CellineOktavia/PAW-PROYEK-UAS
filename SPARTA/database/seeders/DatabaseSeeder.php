@@ -9,7 +9,6 @@ use App\Models\Faktur;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\DetailFaktur;
-use App\Models\Customer;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,9 +19,13 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
         Supplier::factory(30)->create();
         Product::factory(100)->create();
+
+        $this->call([
+            CustomerSeeder::class,
+        ]);
+
         Faktur::factory(50)->create();
         DetailFaktur::factory(100)->create();
-        Customer::factory(50)->create();
 
         User::factory()->create([
             'name' => 'Test User',

@@ -26,13 +26,12 @@ class OwnerDashboardController extends Controller
         $profit = $totalPenjualan - $totalPembelian;
 
         $pendapatanBulanan = Penjualan::select(
-            DB::raw("DATE_FORMAT(tanggal, '%Y-%m') as bulan"),
+            DB::raw("strftime('%Y-%m', tanggal) as bulan"),
             DB::raw('SUM(total) as total')
         )
-            ->groupBy('bulan')
-            ->orderBy('bulan')
+            ->groupBy(DB::raw("strftime('%Y-%m', tanggal)"))
+            ->orderBy(DB::raw("strftime('%Y-%m', tanggal)"), 'asc')
             ->get();
-
         $topProduk = DB::table('detail_penjualans')
             ->join(
                 'products',

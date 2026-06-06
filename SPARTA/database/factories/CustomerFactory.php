@@ -10,25 +10,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CustomerFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Customer::class;
+
     public function definition(): array
     {
         return [
-            'kode_customer' =>
-            fake()->unique()
-                ->numerify('CUS###'),
-            'nama_customer' =>
-            fake()->name(),
-            'telepon' =>
-            fake()->phoneNumber(),
-            'email' =>
-            fake()->safeEmail(),
-            'alamat' =>
-            fake()->address(),
+            'kode_customer' => fake()->unique()->numerify('CUS###'),
+            'nama_customer' => fake()->name(),
+            'telepon' => fake()->phoneNumber(),
+            'email' => fake()->unique()->safeEmail(),
+            'alamat' => fake()->address(),
             'aktif' => true,
         ];
     }
