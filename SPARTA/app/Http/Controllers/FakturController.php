@@ -8,6 +8,7 @@ use App\Models\Supplier;
 use App\Models\DetailFaktur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\StockMovement;
 
 class FakturController extends Controller
@@ -217,62 +218,99 @@ class FakturController extends Controller
     public function edit(Faktur $faktur)
     {
         if (Auth::user()->role !== 'owner') {
-
             abort(403);
         }
 
         $suppliers = Supplier::all();
-
         $products = Product::all();
 
-        $faktur->load(
-            'detailFakturs'
-        );
+        $faktur->load('detailFakturs');
+
+        $detail = $faktur->detailFakturs->first();
 
         return view(
             'faktur.edit',
             compact(
                 'faktur',
                 'suppliers',
-                'products'
+                'products',
+                'detail'
             )
         );
     }
 
-    public function update(
-        Request $request,
-        Faktur $faktur
-    ) {
-        if (Auth::user()->role !== 'owner') {
+    public function update(Request $request, Faktur $faktur)
+{
+    if (Auth::user()->role !== 'owner') {
+        abort(403);
+    }
 
-            abort(403);
-        }
+    $request->validate([
+        'supplier_id' => 'required|exists:suppliers,id',
+        'product_id' => 'required|exists:products,id',
+        'qty' => 'required|integer|min:1',
+        'harga' => 'required|numeric|min:1',
+        'tanggal' => 'required|date',
+    ]);
 
-        $request->validate([
+    DB::transaction(function () use ($request, $faktur) {
 
-            'supplier_id' =>
-            'required|exists:suppliers,id',
+        $detail = $faktur->detailFakturs()->first();
 
-            'tanggal' =>
-            'required|date',
-
-        ]);
+        $subtotal = $request->qty * $request->harga;
 
         $faktur->update([
-
-            'supplier_id' =>
-            $request->supplier_id,
-
-            'tanggal' =>
-            $request->tanggal,
-
+            'supplier_id' => $request->supplier_id,
+            'tanggal' => $request->tanggal,
+            'total' => $subtotal,
         ]);
 
-        return redirect()
-            ->route('faktur.index')
-            ->with(
-                'success',
-                'Faktur berhasil diperbarui'
-            );
-    }
+        if ($detail) {
+            $oldProduct = Product::find($detail->product_id);
+            $newProduct = Product::findOrFail($request->product_id);
+
+            if ($oldProduct && $oldProduct->id != $newProduct->id) {
+                $oldProduct->decrement('stok', $detail->qty);
+                $newProduct->increment('stok', $request->qty);
+            } else {
+                $selisihQty = $request->qty - $detail->qty;
+
+                if ($selisihQty > 0) {
+                    $newProduct->increment('stok', $selisihQty);
+                } elseif ($selisihQty < 0) {
+                    $newProduct->decrement('stok', abs($selisihQty));
+                }
+            }
+
+            $detail->update([
+                'product_id' => $request->product_id,
+                'qty' => $request->qty,
+                'harga' => $request->harga,
+                'subtotal' => $subtotal,
+            ]);
+        } else {
+            DetailFaktur::create([
+                'faktur_id' => $faktur->id,
+                'product_id' => $request->product_id,
+                'qty' => $request->qty,
+                'harga' => $request->harga,
+                'subtotal' => $subtotal,
+            ]);
+
+            $product = Product::findOrFail($request->product_id);
+            $product->increment('stok', $request->qty);
+        }
+
+        StockMovement::create([
+            'product_id' => $request->product_id,
+            'jenis' => 'masuk',
+            'qty' => $request->qty,
+            'keterangan' => 'Edit Faktur ' . $faktur->nomor_faktur,
+        ]);
+    });
+
+    return redirect()
+        ->route('faktur.index')
+        ->with('success', 'Faktur berhasil diperbarui');
+}
 }

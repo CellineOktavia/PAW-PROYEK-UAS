@@ -1,5 +1,11 @@
 @extends('app.master')
 
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
+@endpush
+
 @section('content')
     <div class="container-fluid">
 
@@ -103,35 +109,51 @@
 
                     <div class="row">
 
-                        {{-- Produk --}}
+                        <input type="hidden" name="product_id" id="product_id">
+
                         <div class="col-md-4 mb-3">
+                            <label class="form-label">Kode Produk</label>
 
-                            <label class="form-label">
-
-                                Produk
-
-                            </label>
-
-                            <select name="product_id" class="form-select" required>
-
-                                <option value="">
-
-                                    Pilih Produk
-
-                                </option>
+                            <select id="kode_produk" class="form-select product-select" required>
+                                <option value="">Pilih Kode Produk</option>
 
                                 @foreach ($products as $product)
-                                    <option value="{{ $product->id }}" data-harga="{{ $product->harga_beli }}">
-
+                                    <option value="{{ $product->id }}" data-harga="{{ $product->harga_beli }}"
+                                        data-stok="{{ $product->stok }}">
                                         {{ $product->kode_produk }}
-                                        -
-                                        {{ $product->nama_produk }}
-
                                     </option>
                                 @endforeach
-
                             </select>
+                        </div>
 
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Nama Produk</label>
+
+                            <select id="nama_produk" class="form-select product-select" required>
+                                <option value="">Pilih Nama Produk</option>
+
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}" data-harga="{{ $product->harga_beli }}"
+                                        data-stok="{{ $product->stok }}">
+                                        {{ $product->nama_produk }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Merk</label>
+
+                            <select id="merk_produk" class="form-select product-select" required>
+                                <option value="">Pilih Merk</option>
+
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}" data-harga="{{ $product->harga_beli }}"
+                                        data-stok="{{ $product->stok }}">
+                                        {{ $product->merk }} - {{ $product->nama_produk }} ({{ $product->kode_produk }})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         {{-- Qty --}}
@@ -196,58 +218,90 @@
         </div>
 
     </div>
+@endsection
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        const produkSelect =
-            document.querySelector(
-                'select[name="product_id"]'
-            );
+        $(document).ready(function() {
+            let isSyncing = false;
 
-        const qtyInput =
-            document.getElementById('qty');
+            $('.select2').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Cari data...',
+                allowClear: true,
+                width: '100%'
+            });
 
-        const hargaInput =
-            document.getElementById('harga');
+            $('.product-select').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Cari produk...',
+                allowClear: true,
+                width: '100%'
+            });
 
-        const subtotalInput =
-            document.getElementById('subtotal');
+            $('.product-select').on('change', function() {
+                if (isSyncing) return;
 
-        function hitungSubtotal() {
-            const qty =
-                parseInt(qtyInput.value) || 0;
+                const productId = $(this).val();
 
-            const harga =
-                parseFloat(hargaInput.value) || 0;
+                if (!productId) {
+                    clearProduct();
+                    return;
+                }
 
-            const subtotal =
-                qty * harga;
+                pilihProduk(productId);
+            });
 
-            subtotalInput.value =
-                subtotal.toLocaleString('id-ID');
-        }
+            $('#qty, #harga').on('input', function() {
+                hitungSubtotal();
+            });
 
-        produkSelect.addEventListener(
-            'change',
-            function() {
-                const harga =
-                    this.options[
-                        this.selectedIndex
-                    ].dataset.harga || 0;
+            function pilihProduk(productId) {
+                isSyncing = true;
 
-                hargaInput.value = harga;
+                $('#product_id').val(productId);
+
+                $('#kode_produk').val(productId).trigger('change.select2');
+                $('#nama_produk').val(productId).trigger('change.select2');
+                $('#merk_produk').val(productId).trigger('change.select2');
+
+                const selected = $('#kode_produk option[value="' + productId + '"]');
+
+                const harga = selected.data('harga') || 0;
+                const stok = selected.data('stok') || 0;
+
+                $('#harga').val(harga);
+                $('#qty').attr('max', stok);
 
                 hitungSubtotal();
+
+                isSyncing = false;
             }
-        );
 
-        qtyInput.addEventListener(
-            'input',
-            hitungSubtotal
-        );
+            function hitungSubtotal() {
+                const qty = Number($('#qty').val() || 0);
+                const harga = Number($('#harga').val() || 0);
 
-        hargaInput.addEventListener(
-            'input',
-            hitungSubtotal
-        );
+                $('#subtotal').val(Number(qty * harga).toLocaleString('id-ID'));
+            }
+
+            function clearProduct() {
+                isSyncing = true;
+
+                $('#product_id').val('');
+                $('#kode_produk').val('').trigger('change.select2');
+                $('#nama_produk').val('').trigger('change.select2');
+                $('#merk_produk').val('').trigger('change.select2');
+
+                $('#harga').val('');
+                $('#subtotal').val('');
+                $('#qty').val('');
+                $('#qty').removeAttr('max');
+
+                isSyncing = false;
+            }
+        });
     </script>
-@endsection
+@endpush

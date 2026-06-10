@@ -1,4 +1,9 @@
 @extends('app.master')
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
+@endpush
 
 @section('content')
     <div class="container-fluid">
@@ -13,8 +18,7 @@
 
             <div class="card-body">
 
-                <form action="{{ route('customer.update', $customer) }}"
-                    method="POST">
+                <form action="{{ route('customer.update', $customer) }}" method="POST">
 
                     @csrf
                     @method('PUT')
@@ -27,8 +31,8 @@
 
                         </label>
 
-                        <input type="text" name="kode_customer" class="form-control" value="{{ $customer->kode_customer }}"
-                            required>
+                        <input type="text" name="kode_customer" class="form-control"
+                            value="{{ $customer->kode_customer }}" required>
 
                     </div>
 
@@ -101,3 +105,18 @@
 
     </div>
 @endsection
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Cari data...',
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+@endpush
