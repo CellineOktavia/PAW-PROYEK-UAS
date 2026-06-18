@@ -262,6 +262,60 @@
             border-radius: 10px;
             padding: 8px 18px;
         }
+
+        .sidebar-custom {
+            background: #f8fafc;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .sidebar-custom .sidebar-title,
+        .sidebar-custom h6 {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 22px 0 10px;
+            padding-left: 10px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .sidebar-custom a,
+        .sidebar-custom .list-group-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 16px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            border: none;
+            background: transparent;
+            color: #1e293b;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all .25s ease;
+        }
+
+        .sidebar-custom a:hover,
+        .sidebar-custom .list-group-item:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            transform: translateX(4px);
+        }
+
+        .sidebar-custom a.active,
+        .sidebar-custom .list-group-item.active {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, .28);
+        }
+
+        .sidebar-custom i,
+        .sidebar-custom span:first-child {
+            width: 22px;
+            text-align: center;
+            font-size: 15px;
+        }
     </style>
 </head>
 
@@ -299,7 +353,7 @@
     </nav>
     <div class="container-fluid">
         <div class="row">
-            <aside class="col-md-3 col-lg-2 bg-light border-end min-vh-100 p-3">
+            <aside class="col-md-3 col-lg-2 sidebar-custom min-vh-100 p-3">
                 @section('sidebar')
                     @include('app.sidebar')
                 @show
