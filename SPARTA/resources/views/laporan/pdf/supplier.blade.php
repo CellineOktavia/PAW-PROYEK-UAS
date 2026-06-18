@@ -1,83 +1,188 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
 
+    
     <meta charset="UTF-8">
 
     <title>
-
         Laporan Supplier
-
     </title>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        h2 {
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 11px;
+            color: #333;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            color: #2563eb;
+            margin-bottom: 4px;
+        }
+
+        .header h2 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 11px;
+        }
+
+        .info {
+            margin-bottom: 15px;
+        }
+
+        .info table {
+            width: 100%;
+        }
+
+        .info td {
+            padding: 2px 0;
+            border: none;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .report-table th {
+            background: #2563eb;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        .report-table td {
+            padding: 8px;
+            border: 1px solid #d1d5db;
+        }
+
+        .report-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .text-center {
             text-align: center;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid #000;
-        }
-
-        th {
-            background: #f2f2f2;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-        }
-
         .footer {
-            margin-top: 20px;
-            font-size: 11px;
+            margin-top: 25px;
+            border-top: 1px solid #d1d5db;
+            padding-top: 10px;
+            text-align: center;
+            font-size: 10px;
+            color: #777;
+        }
+
+        .summary {
+            margin-top: 15px;
+            text-align: right;
+            font-size: 12px;
+            font-weight: bold;
         }
     </style>
+    
 
 </head>
 
 <body>
 
-    <h2>
+    
+    {{-- HEADER --}}
+    <div class="header">
 
-        LAPORAN DATA SUPPLIER
+        <h1>SPARTA</h1>
 
-    </h2>
+        <h2>LAPORAN DATA SUPPLIER</h2>
 
-    <p>
+        <p>
+            Sparepart Inventory Management System
+        </p>
 
-        Tanggal Cetak :
-        {{ now()->format('d-m-Y H:i') }}
+    </div>
 
-    </p>
+    {{-- INFORMASI LAPORAN --}}
+    <div class="info">
 
-    <table>
+        <table>
+
+            <tr>
+                <td width="150">
+                    Tanggal Cetak
+                </td>
+
+                <td>
+                    : {{ now()->format('d-m-Y H:i') }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Total Supplier
+                </td>
+
+                <td>
+                    : {{ $suppliers->count() }}
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+    {{-- TABEL --}}
+    <table class="report-table">
 
         <thead>
 
             <tr>
 
-                <th>No</th>
-                <th>Kode Supplier</th>
-                <th>Nama Supplier</th>
-                <th>Kontak</th>
-                <th>Telepon</th>
-                <th>Email</th>
+                <th width="40">
+                    No
+                </th>
+
+                <th width="100">
+                    Kode Supplier
+                </th>
+
+                <th>
+                    Nama Supplier
+                </th>
+
+                <th width="120">
+                    Kontak
+                </th>
+
+                <th width="120">
+                    Telepon
+                </th>
+
+                <th width="180">
+                    Email
+                </th>
 
             </tr>
 
@@ -85,10 +190,10 @@
 
         <tbody>
 
-            @foreach ($suppliers as $supplier)
+            @forelse($suppliers as $supplier)
                 <tr>
 
-                    <td>
+                    <td class="text-center">
 
                         {{ $loop->iteration }}
 
@@ -120,23 +225,49 @@
 
                     <td>
 
-                        {{ $supplier->email }}
+                        {{ $supplier->email ?? '-' }}
 
                     </td>
 
                 </tr>
-            @endforeach
+
+            @empty
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+
+                        Tidak ada data supplier
+
+                    </td>
+
+                </tr>
+            @endforelse
 
         </tbody>
 
     </table>
 
-    <div class="footer">
+    {{-- RINGKASAN --}}
+    <div class="summary">
 
-        Total Supplier :
+        Total Supplier Terdaftar :
         {{ $suppliers->count() }}
 
     </div>
+
+    {{-- FOOTER --}}
+    <div class="footer">
+
+        <strong>SPARTA</strong>
+        - Sparepart Inventory Management System
+
+        <br>
+
+        © {{ date('Y') }} Richie Motor
+
+    </div>
+    
 
 </body>
 

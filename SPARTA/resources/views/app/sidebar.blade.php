@@ -1,129 +1,193 @@
-<div class="list-group list-group-flush">
+<style>
+    /* =========================
+   SIDEBAR SPARTA
+========================= */
 
+    .sidebar-menu {
+        padding: 8px;
+    }
 
-    {{-- OWNER --}}
+    .sidebar-title {
+        margin: 18px 12px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #94a3b8;
+    }
+
+    .sidebar-menu .list-group-item {
+        border: none;
+        border-radius: 12px;
+        margin-bottom: 6px;
+        padding: 12px 14px;
+        font-weight: 600;
+        color: #334155;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all .25s ease;
+    }
+
+    .sidebar-menu .list-group-item i {
+        width: 20px;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .sidebar-menu .list-group-item:hover {
+        background: #eff6ff;
+        color: #2563eb;
+        transform: translateX(4px);
+    }
+
+    .sidebar-menu .list-group-item.active {
+        background: linear-gradient(135deg,
+                #2563eb,
+                #3b82f6);
+        color: white;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, .20);
+    }
+
+    .sidebar-menu .list-group-item.active i {
+        color: white;
+    }
+</style>
+
+<div class="list-group list-group-flush sidebar-menu">
+
     @if (Auth::user()->role == 'owner')
         <a href="{{ route('owner.dashboard') }}"
             class="list-group-item list-group-item-action {{ request()->is('owner/dashboard') ? 'active' : '' }}">
-            📊 Dashboard Owner
+            <i class="bi bi-grid-1x2-fill"></i>
+            Dashboard Owner
         </a>
 
-        {{-- TRANSAKSI --}}
-        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <div class="sidebar-title">
             Transaksi
         </div>
 
         <a href="/penjualan"
             class="list-group-item list-group-item-action {{ request()->is('penjualan*') ? 'active' : '' }}">
-            🧾 Data Penjualan
+            <i class="bi bi-receipt"></i>
+            Data Penjualan
         </a>
 
         <a href="/faktur" class="list-group-item list-group-item-action {{ request()->is('faktur*') ? 'active' : '' }}">
-            🛒 Data Pembelian
+            <i class="bi bi-cart3"></i>
+            Data Pembelian
         </a>
 
-        {{-- LAPORAN --}}
-        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <div class="sidebar-title">
             Laporan
         </div>
 
         <a href="/laporan/penjualan"
             class="list-group-item list-group-item-action {{ request()->is('laporan/penjualan*') ? 'active' : '' }}">
-            📈 Laporan Penjualan
+            <i class="bi bi-graph-up-arrow"></i>
+            Laporan Penjualan
         </a>
 
         <a href="/laporan/pembelian"
             class="list-group-item list-group-item-action {{ request()->is('laporan/pembelian*') ? 'active' : '' }}">
-            📊 Laporan Pembelian
+            <i class="bi bi-bar-chart-line"></i>
+            Laporan Pembelian
         </a>
 
         <a href="/laporan/stok"
             class="list-group-item list-group-item-action {{ request()->is('laporan/stok*') ? 'active' : '' }}">
-            📦 Laporan Stok
+            <i class="bi bi-box-seam"></i>
+            Laporan Stok
         </a>
 
         <a href="/laporan/customer"
             class="list-group-item list-group-item-action {{ request()->is('laporan/customer*') ? 'active' : '' }}">
-            👤 Laporan Customer
+            <i class="bi bi-people"></i>
+            Laporan Customer
         </a>
 
         <a href="/laporan/supplier"
             class="list-group-item list-group-item-action {{ request()->is('laporan/supplier*') ? 'active' : '' }}">
-            🚚 Laporan Supplier
+            <i class="bi bi-truck"></i>
+            Laporan Supplier
         </a>
     @endif
 
-    {{-- ADMIN --}}
     @if (Auth::user()->role == 'admin')
-        {{-- DASHBOARD --}}
         <a href="/dashboard"
             class="list-group-item list-group-item-action {{ request()->is('dashboard') ? 'active' : '' }}">
-            📊 Dashboard Admin
+            <i class="bi bi-grid-1x2-fill"></i>
+            Dashboard Admin
         </a>
 
-        {{-- MASTER DATA --}}
-        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <div class="sidebar-title">
             Master Data
         </div>
 
         <a href="{{ route('customer.index') }}"
             class="list-group-item list-group-item-action {{ request()->routeIs('customer.*') ? 'active' : '' }}">
-            👤 Pelanggan
+            <i class="bi bi-people"></i>
+            Pelanggan
         </a>
 
         <a href="/produk"
             class="list-group-item list-group-item-action {{ request()->is('produk*') ? 'active' : '' }}">
-            📦 Produk
+            <i class="bi bi-box-seam"></i>
+            Produk
         </a>
 
         <a href="/supplier"
             class="list-group-item list-group-item-action {{ request()->is('supplier*') ? 'active' : '' }}">
-            🚚 Supplier
+            <i class="bi bi-truck"></i>
+            Supplier
         </a>
 
-        {{-- PEMBELIAN --}}
-        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <div class="sidebar-title">
             Pembelian
         </div>
 
         <a href="/faktur"
             class="list-group-item list-group-item-action {{ request()->is('faktur*') ? 'active' : '' }}">
-            🛒 Faktur Pembelian
+            <i class="bi bi-cart3"></i>
+            Faktur Pembelian
         </a>
 
-        {{-- PENJUALAN --}}
-        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <div class="sidebar-title">
             Penjualan
         </div>
 
         <a href="/penjualan"
             class="list-group-item list-group-item-action {{ request()->is('penjualan*') ? 'active' : '' }}">
-            🧾 Faktur Penjualan
+            <i class="bi bi-receipt"></i>
+            Faktur Penjualan
         </a>
 
-        {{-- INVENTORY --}}
-        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <div class="sidebar-title">
             Inventory
         </div>
 
         <a href="/stok-kritis"
             class="list-group-item list-group-item-action {{ request()->is('stok-kritis*') ? 'active' : '' }}">
-            ⚠️ Stok Kritis
+            <i class="bi bi-exclamation-triangle"></i>
+            Stok Kritis
         </a>
 
         <a href="/riwayat-stok"
             class="list-group-item list-group-item-action {{ request()->is('riwayat-stok*') ? 'active' : '' }}">
-            📈 Riwayat Stok
+            <i class="bi bi-clock-history"></i>
+            Riwayat Stok
         </a>
 
-        {{-- LAPORAN --}}
-        <div class="px-3 pt-3 pb-1 text-uppercase fw-bold small text-secondary">
+        <div class="sidebar-title">
             Laporan
         </div>
 
         <a href="/laporan"
             class="list-group-item list-group-item-action {{ request()->is('laporan*') ? 'active' : '' }}">
-            📑 Laporan
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            Laporan
         </a>
     @endif
+
 </div>

@@ -316,6 +316,183 @@
             text-align: center;
             font-size: 15px;
         }
+
+        /* =====================================
+   SPARTA GLOBAL ANIMATION
+===================================== */
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Fade Page */
+        .page-content {
+            animation: fadePage .5s ease;
+        }
+
+        @keyframes fadePage {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card Animation */
+        .card,
+        .dashboard-card,
+        .stats-card,
+        .summary-card,
+        .custom-card {
+            animation: slideUp .5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hover Card */
+        .card,
+        .dashboard-card,
+        .summary-card,
+        .custom-card {
+            transition: all .3s ease;
+        }
+
+        .card:hover,
+        .dashboard-card:hover,
+        .summary-card:hover,
+        .custom-card:hover {
+
+            transform: translateY(-6px);
+
+            box-shadow:
+                0 12px 30px rgba(37, 99, 235, .12);
+        }
+
+        /* Table Row Hover */
+        .table tbody tr {
+            transition: .25s ease;
+        }
+
+        .table tbody tr:hover {
+
+            background: #eff6ff;
+
+            transform: scale(1.002);
+        }
+
+        /* Button Animation */
+        .btn {
+
+            transition: all .3s ease !important;
+        }
+
+        .btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, .15);
+        }
+
+        /* Input Focus */
+        .form-control:focus,
+        .form-select:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 .15rem rgba(37, 99, 235, .15);
+        }
+
+        /* Sidebar Hover */
+        .sidebar-menu a,
+        .list-group-item {
+
+            transition: all .25s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .list-group-item:hover {
+
+            padding-left: 24px;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+        }
+
+        /* Badge Hover */
+        .badge {
+
+            transition: .3s;
+        }
+
+        .badge:hover {
+
+            transform: scale(1.08);
+        }
+
+        /* Chart Animation */
+        .chart-card {
+
+            animation:
+                fadePage .8s ease;
+        }
+
+        /* Alert Animation */
+        .alert {
+
+            animation:
+                fadePage .4s ease;
+        }
+
+        /* Pagination */
+        .pagination .page-link {
+
+            transition: .25s;
+        }
+
+        .pagination .page-link:hover {
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+        /* Navbar */
+        .navbar {
+
+            animation:
+                slideDown .5s ease;
+        }
+
+        @keyframes slideDown {
+
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -339,9 +516,10 @@
                     <div class="role">{{ strtoupper(Auth::user()->role) }}</div>
                 </div>
 
-                <form action="{{ route('logout') }}" method="POST" onsubmit="return confirmLogout()">
+                <form action="{{ route('logout') }}" method="POST" onsubmit="return confirmLogout()"
+                    class="d-flex py-3">
                     @csrf
-                    <button type="submit" class="btn btn-danger logout-btn-top">
+                    <button type="submit" class="btn btn-danger logout-btn-top d-flex align-items-center">
                         <i class="bi bi-box-arrow-right me-1"></i>
                         Logout
                     </button>
@@ -373,6 +551,39 @@
                 'Apakah Anda yakin ingin logout?'
             );
         }
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            document.body.classList.add("loaded");
+
+            document.querySelectorAll("a").forEach(link => {
+
+                if (
+                    link.hostname === window.location.hostname &&
+                    !link.target &&
+                    !link.href.includes('#')
+                ) {
+
+                    link.addEventListener("click", function(e) {
+
+                        e.preventDefault();
+
+                        document.body.classList.add("page-exit");
+
+                        setTimeout(() => {
+
+                            window.location =
+                                this.href;
+
+                        }, 250);
+
+                    });
+
+                }
+
+            });
+
+        });
     </script>
     @stack('scripts')
 

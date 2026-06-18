@@ -285,6 +285,15 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 });
 
+//Privasi Routes
+Route::get('/kebijakan-privasi', function () {
+    return view('privasi.kebijakan');
+})->name('privasi.kebijakan');
+
+Route::get('/syarat-dan-ketentuan', function () {
+    return view('privasi.terms');
+})->name('privasi.terms');
+
 // Admin Dashboard Routes
 Route::middleware([
     'auth',

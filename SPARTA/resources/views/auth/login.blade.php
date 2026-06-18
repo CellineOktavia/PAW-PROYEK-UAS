@@ -416,10 +416,10 @@
         /* Footer note */
         .auth-footer {
             text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.78rem;
+            margin-top: 1.75rem;
+            font-size: .75rem;
             color: var(--sparta-muted);
-            animation: slideDown 0.6s cubic-bezier(.16, 1, .3, 1) 0.25s both;
+            opacity: .85;
         }
 
         /* Loading spinner inside button */
@@ -439,6 +439,49 @@
             }
         }
 
+        .back-home-wrapper {
+
+            margin-top: 1rem;
+            margin-bottom: .5rem;
+
+            text-align: center;
+        }
+
+        .back-home-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+            gap: .5rem;
+
+            padding: .75rem 1rem;
+
+            border-radius: 12px;
+
+            text-decoration: none;
+
+            color: var(--sparta-muted);
+
+            font-size: .85rem;
+            font-weight: 600;
+
+            transition: all .25s ease;
+        }
+
+        .back-home-btn:hover {
+
+            background: var(--sparta-blue-light);
+
+            color: var(--sparta-blue);
+
+            transform: translateX(-3px);
+        }
+
+        .back-home-btn i {
+
+            font-size: 1rem;
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .auth-card {
@@ -447,6 +490,54 @@
 
             .auth-heading {
                 font-size: 1.35rem;
+            }
+
+            /* Legal Notice */
+
+            .legal-notice {
+                margin-top: 1.25rem;
+                padding-top: 1rem;
+
+                border-top: 1px solid var(--sparta-border);
+
+                display: flex;
+                align-items: flex-start;
+                gap: .65rem;
+
+                font-size: .78rem;
+                line-height: 1.6;
+
+                color: var(--sparta-muted);
+            }
+
+            .legal-icon {
+                color: var(--sparta-blue);
+                margin-top: 2px;
+                flex-shrink: 0;
+            }
+
+            .legal-link {
+                text-decoration: none;
+                font-weight: 600;
+                transition: .2s ease;
+            }
+
+            .privacy-link {
+                color: var(--sparta-blue);
+            }
+
+            .privacy-link:hover {
+                color: var(--sparta-blue-dark);
+                text-decoration: underline;
+            }
+
+            .terms-link {
+                color: var(--sparta-teal);
+            }
+
+            .terms-link:hover {
+                color: var(--sparta-teal-dark);
+                text-decoration: underline;
             }
         }
     </style>
@@ -539,10 +630,36 @@
                     <span id="loginText">Masuk</span>
                 </button>
             </form>
+
+            <div class="back-home-wrapper">
+
+                <a href="{{ route('landing-page') }}" class="back-home-btn">
+
+                    <i class="bi bi-arrow-left-circle"></i>
+
+                    Kembali ke Landing Page
+
+                </a>
+
+            </div>
+
+            <div class="legal-notice py-3">
+                <i class="bi bi-shield-check legal-icon"></i>
+                <span>
+                    Dengan masuk, Anda menyetujui
+                    <a href="{{ route('privasi.kebijakan') }}" class="legal-link privacy-link">
+                        Kebijakan Privasi
+                    </a>
+                    dan
+                    <a href="{{ route('privasi.terms') }}" class="legal-link terms-link">
+                        Syarat & Ketentuan
+                    </a>
+                </span>
+            </div>
         </div>
 
         <p class="auth-footer">
-            &copy; {{ date('Y') }} SPARTA — Sistem CRUD Barang &amp; Supplier
+            © {{ date('Y') }} SPARTA • Richie Motor
         </p>
     </div>
 

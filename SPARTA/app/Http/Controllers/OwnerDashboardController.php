@@ -7,31 +7,85 @@ use App\Models\Supplier;
 use App\Models\Customer;
 use App\Models\Penjualan;
 use App\Models\Faktur;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OwnerDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // ==================================
+        // FILTER TANGGAL
+        // ==================================
+
+        $filter = $request->get('filter', 'tahun');
+
+        if ($filter == 'hari') {
+
+            $startDate = now()->toDateString();
+            $endDate = now()->toDateString();
+        } elseif ($filter == 'bulan') {
+
+            $startDate = now()->startOfMonth()->toDateString();
+            $endDate = now()->endOfMonth()->toDateString();
+        } elseif ($filter == 'custom') {
+
+            $startDate = $request->start_date
+                ?? now()->startOfMonth()->toDateString();
+
+            $endDate = $request->end_date
+                ?? now()->toDateString();
+        } else {
+
+            $startDate = now()->startOfYear()->toDateString();
+            $endDate = now()->endOfYear()->toDateString();
+        }
+
+        // ==================================
+        // KPI
+        // ==================================
+
         $totalProduk = Product::count();
 
         $totalSupplier = Supplier::count();
 
         $totalCustomer = Customer::count();
 
-        $totalPenjualan = Penjualan::sum('total');
+        $totalPenjualan = Penjualan::whereBetween(
+            'tanggal',
+            [$startDate, $endDate]
+        )->sum('total');
 
-        $totalPembelian = Faktur::sum('total');
+        $totalPembelian = DB::table('detail_fakturs')
+            ->selectRaw('SUM(qty * harga) as total')
+            ->value('total');
 
         $profit = $totalPenjualan - $totalPembelian;
 
-        $pendapatanBulanan = Penjualan::select(
-            DB::raw("strftime('%Y-%m', tanggal) as bulan"),
-            DB::raw('SUM(total) as total')
+        // ==================================
+        // GRAFIK
+        // ==================================
+
+        $pendapatanBulanan = Penjualan::whereBetween(
+            'tanggal',
+            [$startDate, $endDate]
         )
-            ->groupBy(DB::raw("strftime('%Y-%m', tanggal)"))
-            ->orderBy(DB::raw("strftime('%Y-%m', tanggal)"), 'asc')
+            ->select(
+                DB::raw("strftime('%Y-%m', tanggal) as bulan"),
+                DB::raw('SUM(total) as total')
+            )
+            ->groupBy(
+                DB::raw("strftime('%Y-%m', tanggal)")
+            )
+            ->orderBy(
+                DB::raw("strftime('%Y-%m', tanggal)")
+            )
             ->get();
+
+        // ==================================
+        // TOP PRODUK
+        // ==================================
+
         $topProduk = DB::table('detail_penjualans')
             ->join(
                 'products',
@@ -41,7 +95,8 @@ class OwnerDashboardController extends Controller
             )
             ->select(
                 'products.nama_produk',
-                DB::raw('SUM(qty) as total_terjual')
+                DB::raw('SUM(detail_penjualans.qty) as total_terjual'),
+                DB::raw('SUM(detail_penjualans.subtotal) as total_pendapatan')
             )
             ->groupBy(
                 'products.id',
@@ -50,6 +105,21 @@ class OwnerDashboardController extends Controller
             ->orderByDesc('total_terjual')
             ->limit(5)
             ->get();
+
+        $totalProdukTerjual = DB::table('detail_penjualans')
+            ->sum('qty');
+
+        $dataHarian = Penjualan::select(
+            'tanggal',
+            DB::raw('SUM(total) as pendapatan')
+        )
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get();
+
+        // ==================================
+        // TOP CUSTOMER
+        // ==================================
 
         $topCustomer = DB::table('penjualans')
             ->join(
@@ -60,7 +130,7 @@ class OwnerDashboardController extends Controller
             )
             ->select(
                 'customers.nama_customer',
-                DB::raw('SUM(total) as total_belanja')
+                DB::raw('SUM(penjualans.total) as total_belanja')
             )
             ->groupBy(
                 'customers.id',
@@ -70,15 +140,29 @@ class OwnerDashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // ==================================
+        // STOK KRITIS
+        // ==================================
+
         $stokKritis = Product::whereColumn(
             'stok',
             '<=',
             'stok_minimum'
         )->get();
 
+        $totalStokKritis = $stokKritis->count();
+
+        // ==================================
+        // VIEW
+        // ==================================
+
         return view(
             'dashboard.owner',
             compact(
+                'filter',
+                'dataHarian',
+                'startDate',
+                'endDate',
                 'totalProduk',
                 'totalSupplier',
                 'totalCustomer',
@@ -88,7 +172,9 @@ class OwnerDashboardController extends Controller
                 'pendapatanBulanan',
                 'topProduk',
                 'topCustomer',
-                'stokKritis'
+                'stokKritis',
+                'totalProdukTerjual',
+                'totalStokKritis'
             )
         );
     }
