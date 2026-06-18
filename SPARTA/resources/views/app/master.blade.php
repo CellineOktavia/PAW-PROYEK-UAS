@@ -80,7 +80,7 @@
 
         .dashboard-card {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 22px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, .05);
         }
@@ -189,12 +189,11 @@
         }
 
         .top-navbar {
-            background: #1f2937;
-            min-height: 70px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            min-height: 78px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
+            padding: 0 18px;
         }
 
         .brand-title {
@@ -215,14 +214,16 @@
 
         .header-brand h2 {
             margin: 0;
-            color: #3b82f6;
-            font-weight: 800;
-            letter-spacing: 1px;
+            color: #ffffff;
+            font-weight: 900;
+            letter-spacing: 2px;
+            font-size: 30px;
         }
 
         .header-brand small {
-            color: #cbd5e1;
-            font-size: 13px;
+            color: #dbeafe;
+            font-size: 12px;
+
         }
 
         .user-panel {
@@ -265,9 +266,35 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark shadow-sm py-3">
-        <div class="container-fluid">
-            @include('app.navbar')
+    <nav class="top-navbar shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+
+            <div class="header-brand">
+                <h2>SPARTA</h2>
+                <small>Sparepart Inventory Management System</small>
+            </div>
+
+            <div class="user-panel">
+
+                <div class="user-avatar">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </div>
+
+                <div class="user-detail text-end">
+                    <div class="name">{{ Auth::user()->name }}</div>
+                    <div class="role">{{ strtoupper(Auth::user()->role) }}</div>
+                </div>
+
+                <form action="{{ route('logout') }}" method="POST" onsubmit="return confirmLogout()">
+                    @csrf
+                    <button type="submit" class="btn btn-danger logout-btn-top">
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
         </div>
     </nav>
     <div class="container-fluid">
