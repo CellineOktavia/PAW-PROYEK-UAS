@@ -62,8 +62,6 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
 
-            'kode_produk' => 'required|unique:products',
-
             'nama_produk' => 'required',
 
             'merk' => 'required',
@@ -81,6 +79,30 @@ class ProductController extends Controller
             'deskripsi' => 'nullable',
 
         ]);
+
+        $lastProduct = Product::latest()->first();
+
+        if ($lastProduct) {
+
+            $lastNumber = (int) substr(
+                $lastProduct->kode_produk,
+                -4
+            );
+
+            $newNumber = $lastNumber + 1;
+        } else {
+
+            $newNumber = 1;
+        }
+
+        $validated['kode_produk'] =
+            'PRD' .
+            str_pad(
+                $newNumber,
+                3,
+                '0',
+                STR_PAD_LEFT
+            );
 
         Product::create($validated);
 
@@ -110,10 +132,6 @@ class ProductController extends Controller
         Product $product
     ) {
         $validated = $request->validate([
-
-            'kode_produk' =>
-            'required|unique:products,kode_produk,' .
-                $product->id,
 
             'nama_produk' => 'required',
 
@@ -148,7 +166,6 @@ class ProductController extends Controller
                 'Produk berhasil diperbarui'
             );
     }
-
     public function destroy(Product $product)
     {
         $product->delete();

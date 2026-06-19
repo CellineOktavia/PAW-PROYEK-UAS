@@ -55,22 +55,39 @@ class CustomerController extends Controller
     {
         $validated = $request->validate([
 
-            'kode_customer' =>
-            'required|unique:customers',
+            'nama_customer' => 'required',
 
-            'nama_customer' =>
-            'required',
+            'telepon' => 'nullable',
 
-            'telepon' =>
-            'nullable',
+            'email' => 'nullable|email',
 
-            'email' =>
-            'nullable|email',
-
-            'alamat' =>
-            'nullable',
+            'alamat' => 'nullable',
 
         ]);
+
+        $lastCustomer = Customer::orderBy('id', 'desc')->first();
+
+        if ($lastCustomer) {
+
+            $lastNumber = (int) substr(
+                $lastCustomer->kode_customer,
+                -3
+            );
+
+            $newNumber = $lastNumber + 1;
+        } else {
+
+            $newNumber = 1;
+        }
+
+        $validated['kode_customer'] =
+            'CUS' .
+            str_pad(
+                $newNumber,
+                3,
+                '0',
+                STR_PAD_LEFT
+            );
 
         Customer::create($validated);
 

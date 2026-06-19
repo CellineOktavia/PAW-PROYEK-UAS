@@ -15,7 +15,17 @@
 
                 @csrf
 
-                <input type="text" name="kode_supplier" class="form-control mb-3" placeholder="Kode Supplier">
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Kode Supplier
+
+                    </label>
+
+                    <input type="text" class="form-control bg-light" value="Otomatis dibuat oleh sistem" readonly>
+
+                </div>
 
                 <input type="text" name="nama_supplier" class="form-control mb-3" placeholder="Nama Supplier">
 

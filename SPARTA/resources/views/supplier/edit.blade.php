@@ -1,68 +1,184 @@
 @extends('app.master')
-@push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
-@endpush
 
 @section('content')
-    <div class="card shadow-sm">
+    <div class="container-fluid">
 
-        <div class="card-body">
+        {{-- Header --}}
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <h2 class="mb-4">
+            <div>
 
-                Tambah Supplier
+                <h2 class="fw-bold">
+                    Edit Supplier
+                </h2>
 
-            </h2>
+                <p class="text-muted mb-0">
+                    Perbarui informasi supplier Richie Motor
+                </p>
 
-            <form action="{{ route('supplier.update', $supplier->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <input type="text" name="kode_supplier" class="form-control mb-3" placeholder="Kode Supplier">
+            </div>
 
-                <input type="text" name="nama_supplier" class="form-control mb-3" placeholder="Nama Supplier">
+        </div>
 
-                <input type="text" name="nama_kontak" class="form-control mb-3" placeholder="Nama Kontak">
+        {{-- Error Validation --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
 
-                <input type="text" name="telepon" class="form-control mb-3" placeholder="Telepon">
+                <ul class="mb-0">
 
-                <input type="email" name="email" class="form-control mb-3" placeholder="Email">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
 
-                <textarea name="alamat" class="form-control mb-3" rows="3" placeholder="Alamat"></textarea>
+                </ul>
 
-                <select name="aktif" class="form-select mb-3">
+            </div>
+        @endif
 
-                    value="{{ old('kode_supplier', $supplier->kode_supplier) }}"
+        {{-- Form Card --}}
+        <div class="card border-0 shadow-sm">
 
-                    value="{{ old('kode_supplier', $supplier->kode_supplier) }}"
+            <div class="card-body p-4">
 
-                </select>
+                <form action="{{ route('supplier.update', $supplier->id) }}" method="POST">
 
-                <button type="submit" class="btn btn-primary">
+                    @csrf
+                    @method('PUT')
 
-                    Simpan Supplier
+                    <div class="row">
 
-                </button>
+                        {{-- Kode Supplier --}}
+                        <div class="col-md-6 mb-3">
 
-            </form>
+                            <label class="form-label fw-semibold">
+
+                                Kode Supplier
+
+                            </label>
+
+                            <input type="text" name="kode_supplier" class="form-control"
+                                value="{{ old('kode_supplier', $supplier->kode_supplier) }}"
+                                placeholder="Masukkan kode supplier">
+
+                        </div>
+
+                        {{-- Nama Supplier --}}
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Nama Supplier
+
+                            </label>
+
+                            <input type="text" name="nama_supplier" class="form-control"
+                                value="{{ old('nama_supplier', $supplier->nama_supplier) }}"
+                                placeholder="Masukkan nama supplier">
+
+                        </div>
+
+                        {{-- Nama Kontak --}}
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Nama Kontak
+
+                            </label>
+
+                            <input type="text" name="nama_kontak" class="form-control"
+                                value="{{ old('nama_kontak', $supplier->nama_kontak) }}" placeholder="Masukkan nama kontak">
+
+                        </div>
+
+                        {{-- Telepon --}}
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Telepon
+
+                            </label>
+
+                            <input type="text" name="telepon" class="form-control"
+                                value="{{ old('telepon', $supplier->telepon) }}" placeholder="Masukkan nomor telepon">
+
+                        </div>
+
+                        {{-- Email --}}
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Email
+
+                            </label>
+
+                            <input type="email" name="email" class="form-control"
+                                value="{{ old('email', $supplier->email) }}" placeholder="Masukkan email">
+
+                        </div>
+
+                        {{-- Status --}}
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Status Supplier
+
+                            </label>
+
+                            <select name="aktif" class="form-select">
+
+                                <option value="1" {{ old('aktif', $supplier->aktif) == 1 ? 'selected' : '' }}>
+                                    Aktif
+                                </option>
+
+                                <option value="0" {{ old('aktif', $supplier->aktif) == 0 ? 'selected' : '' }}>
+                                    Nonaktif
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        {{-- Alamat --}}
+                        <div class="col-12 mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Alamat
+
+                            </label>
+
+                            <textarea name="alamat" class="form-control" rows="4" placeholder="Masukkan alamat supplier">{{ old('alamat', $supplier->alamat) }}</textarea>
+
+                        </div>
+
+                    </div>
+
+                    {{-- Action Button --}}
+                    <div class="d-flex gap-2">
+
+                        <button type="submit" class="btn btn-primary">
+
+                            Simpan Perubahan
+
+                        </button>
+
+                        <a href="{{ route('supplier.index') }}" class="btn btn-light border">
+
+                            Batal
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
 
         </div>
 
     </div>
 @endsection
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('.select2').select2({
-                theme: 'bootstrap-5',
-                placeholder: 'Cari data...',
-                allowClear: true,
-                width: '100%'
-            });
-        });
-    </script>
-@endpush

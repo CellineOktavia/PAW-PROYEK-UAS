@@ -19,13 +19,13 @@
 
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
 
-                            Kode Pelanggan
+                            Kode Customer
 
                         </label>
 
-                        <input type="text" name="kode_customer" class="form-control" required>
+                        <input type="text" class="form-control" value="Otomatis dibuat oleh sistem" readonly>
 
                     </div>
 
