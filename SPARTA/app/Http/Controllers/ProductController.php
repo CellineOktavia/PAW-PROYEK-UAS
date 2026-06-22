@@ -26,7 +26,6 @@ class ProductController extends Controller
         return view('produk.index', compact('products', 'search'));
     }
 
-    // ← Tambahkan di sini
     public function show(Product $product)
     {
         return view('produk.show', compact('product'));
@@ -42,7 +41,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'kode_produk'  => 'required|unique:products',
             'nama_produk'  => 'required',
             'merk'         => 'required',
             'supplier_id'  => 'nullable|exists:suppliers,id',
@@ -52,6 +50,14 @@ class ProductController extends Controller
             'harga_jual'   => 'required|numeric|min:0',
             'deskripsi'    => 'nullable',
         ]);
+
+        // Generate kode otomatis
+        $lastProduct = Product::latest('id')->first();
+        $newNumber   = $lastProduct
+            ? ((int) substr($lastProduct->kode_produk, 3)) + 1
+            : 1;
+
+        $validated['kode_produk'] = 'PRD' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
         Product::create($validated);
 

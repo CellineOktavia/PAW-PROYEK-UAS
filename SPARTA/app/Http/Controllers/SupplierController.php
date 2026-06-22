@@ -52,8 +52,6 @@ class SupplierController extends Controller
     {
         $validated = $request->validate([
 
-            'kode_supplier' => 'required|unique:suppliers',
-
             'nama_supplier' => 'required',
 
             'nama_kontak' => 'required',
@@ -67,6 +65,40 @@ class SupplierController extends Controller
             'aktif' => 'required',
 
         ]);
+
+        $lastSupplier = Supplier::select('kode_supplier')
+            ->get()
+            ->sortByDesc(function ($item) {
+                return (int) preg_replace(
+                    '/[^0-9]/',
+                    '',
+                    $item->kode_supplier
+                );
+            })
+            ->first();
+
+        if ($lastSupplier) {
+
+            $lastNumber = (int) preg_replace(
+                '/[^0-9]/',
+                '',
+                $lastSupplier->kode_supplier
+            );
+
+            $newNumber = $lastNumber + 1;
+        } else {
+
+            $newNumber = 1;
+        }
+
+        $validated['kode_supplier'] =
+            'SUP' .
+            str_pad(
+                $newNumber,
+                3,
+                '0',
+                STR_PAD_LEFT
+            );
 
         Supplier::create($validated);
 
@@ -92,10 +124,6 @@ class SupplierController extends Controller
     ) {
 
         $validated = $request->validate([
-
-            'kode_supplier' =>
-            'required|unique:suppliers,kode_supplier,' .
-                $supplier->id,
 
             'nama_supplier' => 'required',
 
