@@ -1,14 +1,9 @@
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 @extends('app.master')
 
 @section('content')
     <style>
-        /* ==========================
-           CUSTOMER PAGE
-        ========================== */
-
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -160,10 +155,23 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
             border: none;
             border-radius: 10px;
             transition: .25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .action-btn:hover {
             transform: translateY(-2px);
+        }
+
+        .btn-view {
+            background: rgba(14, 165, 233, .12);
+            color: #0284c7;
+        }
+
+        .btn-view:hover {
+            background: rgba(14, 165, 233, .2);
+            color: #0284c7;
         }
 
         .btn-edit {
@@ -380,6 +388,13 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
                                     <td>
 
                                         <div class="d-flex gap-2">
+
+                                            <a href="{{ route('customer.show', $customer->id) }}"
+                                                class="btn action-btn btn-view" title="Detail">
+
+                                                <i class="bi bi-eye-fill"></i>
+
+                                            </a>
 
                                             <a href="{{ route('customer.edit', $customer) }}"
                                                 class="btn action-btn btn-edit">

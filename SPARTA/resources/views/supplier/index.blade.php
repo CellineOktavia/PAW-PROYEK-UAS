@@ -2,10 +2,6 @@
 
 @section('content')
     <style>
-        /* ==========================
-           SUPPLIER PAGE
-        ========================== */
-
         .page-header {
             display: flex;
             justify-content: space-between;

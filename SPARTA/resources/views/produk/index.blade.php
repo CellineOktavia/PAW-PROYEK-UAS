@@ -2,10 +2,6 @@
 
 @section('content')
     <style>
-        /* ==========================
-               PRODUCT PAGE
-            ========================== */
-
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -169,6 +165,16 @@
 
         .action-btn:hover {
             transform: translateY(-2px);
+        }
+
+        .btn-view {
+            background: rgba(14, 165, 233, .12);
+            color: #0284c7;
+        }
+
+        .btn-view:hover {
+            background: rgba(14, 165, 233, .2);
+            color: #0284c7;
         }
 
         .btn-edit {
@@ -389,6 +395,13 @@
                                     <td>
 
                                         <div class="d-flex gap-2">
+
+                                            <a href="{{ route('produk.show', $product->id) }}"
+                                                class="btn action-btn btn-view" title="Detail">
+
+                                                <i class="bi bi-eye-fill"></i>
+
+                                            </a>
 
                                             <a href="{{ route('produk.edit', $product->id) }}"
                                                 class="btn action-btn btn-edit">

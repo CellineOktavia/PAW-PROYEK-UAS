@@ -136,4 +136,9 @@ class CustomerController extends Controller
                 'Customer berhasil dihapus'
             );
     }
+
+    public function show(Customer $customer)
+    {
+        return view('customer.show', compact('customer'));
+    }
 }

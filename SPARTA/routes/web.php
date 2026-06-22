@@ -60,6 +60,11 @@ Route::middleware('auth')->group(function () {
     )
         ->name('produk.destroy');
 
+    Route::get(
+        '/produk/{product}',
+        [ProductController::class, 'show']
+    )->name('produk.show');
+
     // Supplier Routes
     Route::get(
         '/supplier',
@@ -243,6 +248,11 @@ Route::middleware('auth')->group(function () {
         '/customer/{customer}',
         [CustomerController::class, 'destroy']
     )->name('customer.destroy');
+
+    Route::get(
+        '/customer/{customer}',
+        [CustomerController::class, 'show']
+    )->name('customer.show');
 
     // Penjualan Routes
     Route::get(
