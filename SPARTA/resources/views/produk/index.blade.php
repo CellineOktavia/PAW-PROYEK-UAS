@@ -22,9 +22,7 @@
         }
 
         .btn-add-product {
-            background: linear-gradient(135deg,
-                    #2563eb,
-                    #3b82f6);
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
             border: none;
             color: white;
             padding: 12px 22px;
@@ -37,19 +35,14 @@
         .btn-add-product:hover {
             color: white;
             transform: translateY(-2px);
-
-            box-shadow:
-                0 10px 25px rgba(37, 99, 235, .25);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, .25);
         }
 
         .product-stat {
             background: white;
             border-radius: 18px;
             padding: 22px;
-
-            box-shadow:
-                0 10px 30px rgba(15, 23, 42, .06);
-
+            box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
             border-top: 4px solid #2563eb;
         }
 
@@ -69,9 +62,7 @@
             border: none;
             border-radius: 20px;
             overflow: hidden;
-
-            box-shadow:
-                0 10px 30px rgba(15, 23, 42, .06);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
         }
 
         .search-box {
@@ -161,6 +152,9 @@
             border-radius: 10px;
             border: none;
             transition: .25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .action-btn:hover {
@@ -182,14 +176,14 @@
             color: #d97706;
         }
 
-        .btn-delete {
-            background: rgba(239, 68, 68, .12);
-            color: #dc2626;
-        }
-
         .btn-edit:hover {
             background: rgba(245, 158, 11, .2);
             color: #d97706;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, .12);
+            color: #dc2626;
         }
 
         .btn-delete:hover {
@@ -207,264 +201,174 @@
             display: block;
             margin-bottom: 12px;
         }
+
+        .barcode-cell {
+            text-align: center;
+        }
+
+        .barcode-cell svg {
+            display: block;
+            margin: 0 auto;
+        }
     </style>
 
     <div class="container-fluid">
 
         {{-- HEADER --}}
         <div class="page-header">
-
             <div>
-
-                <h2 class="page-title">
-                    Data Produk
-                </h2>
-
-                <p class="page-subtitle">
-                    Kelola seluruh produk Richie Motor
-                </p>
-
+                <h2 class="page-title">Data Produk</h2>
+                <p class="page-subtitle">Kelola seluruh produk Richie Motor</p>
             </div>
 
             <a href="{{ route('produk.create') }}" class="btn-add-product">
-
                 <i class="bi bi-plus-circle-fill me-2"></i>
                 Tambah Produk
-
             </a>
-
         </div>
 
         {{-- STAT --}}
         <div class="row mb-4">
-
             <div class="col-md-3">
-
                 <div class="product-stat">
-
-                    <h3>
-                        {{ $products->total() }}
-                    </h3>
-
-                    <p>
-                        Total Produk
-                    </p>
-
+                    <h3>{{ $products->total() }}</h3>
+                    <p>Total Produk</p>
                 </div>
-
             </div>
-
         </div>
 
         {{-- ALERT --}}
         @if (session('success'))
             <div class="alert alert-success border-0 shadow-sm">
-
                 <i class="bi bi-check-circle-fill me-2"></i>
-
                 {{ session('success') }}
-
             </div>
         @endif
 
         {{-- SEARCH --}}
         <div class="card search-card mb-4">
-
             <div class="card-body p-4">
-
                 <form method="GET" action="{{ route('produk.index') }}">
-
                     <div class="row g-3">
-
                         <div class="col-md-10">
-
                             <div class="search-box">
-
                                 <i class="bi bi-search"></i>
-
                                 <input type="text" name="search" class="form-control search-input"
                                     placeholder="Cari kode atau nama produk..." value="{{ request('search') }}">
-
                             </div>
-
                         </div>
-
                         <div class="col-md-2">
-
                             <button type="submit" class="btn btn-primary btn-search w-100">
-
                                 Cari
-
                             </button>
-
                         </div>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
 
         {{-- TABLE --}}
         <div class="card data-card">
-
             <div class="card-body p-0">
-
                 <div class="table-responsive">
-
                     <table class="table product-table mb-0">
-
                         <thead>
-
                             <tr>
-
                                 <th>Kode</th>
                                 <th>Nama Produk</th>
                                 <th>Merk</th>
                                 <th>Stok</th>
                                 <th>Harga Jual</th>
-                                <th width="120">
-                                    Aksi
-                                </th>
-
+                                <th>Barcode</th>
+                                <th width="120">Aksi</th>
                             </tr>
-
                         </thead>
-
                         <tbody>
-
                             @forelse($products as $product)
                                 <tr>
-
                                     <td>
-
                                         <span class="product-code">
-
                                             {{ $product->kode_produk }}
-
                                         </span>
-
                                     </td>
-
                                     <td>
-
                                         <span class="product-name">
-
                                             {{ $product->nama_produk }}
-
                                         </span>
-
                                     </td>
-
+                                    <td>{{ $product->merk }}</td>
                                     <td>
-
-                                        {{ $product->merk }}
-
-                                    </td>
-
-                                    <td>
-
                                         @if ($product->stok <= $product->stok_minimum)
-                                            <span class="stock-critical">
-
-                                                {{ $product->stok }}
-
-                                            </span>
+                                            <span class="stock-critical">{{ $product->stok }}</span>
                                         @else
-                                            <span class="stock-good">
-
-                                                {{ $product->stok }}
-
-                                            </span>
+                                            <span class="stock-good">{{ $product->stok }}</span>
                                         @endif
-
                                     </td>
-
                                     <td>
-
                                         <span class="price-text">
-
                                             Rp {{ number_format($product->harga_jual, 0, ',', '.') }}
-
                                         </span>
-
                                     </td>
-
+                                    <td class="barcode-cell">
+                                        <svg class="barcode" data-value="{{ $product->kode_produk }}">
+                                        </svg>
+                                    </td>
                                     <td>
-
                                         <div class="d-flex gap-2">
-
                                             <a href="{{ route('produk.show', $product->id) }}"
                                                 class="btn action-btn btn-view" title="Detail">
-
                                                 <i class="bi bi-eye-fill"></i>
-
                                             </a>
-
                                             <a href="{{ route('produk.edit', $product->id) }}"
                                                 class="btn action-btn btn-edit">
-
                                                 <i class="bi bi-pencil-fill"></i>
-
                                             </a>
-
                                             <form action="{{ route('produk.destroy', $product->id) }}" method="POST">
-
                                                 @csrf
                                                 @method('DELETE')
-
                                                 <button type="submit" class="btn action-btn btn-delete"
                                                     onclick="return confirm('Yakin ingin menghapus produk ini?')">
-
                                                     <i class="bi bi-trash-fill"></i>
-
                                                 </button>
-
                                             </form>
-
                                         </div>
-
                                     </td>
-
                                 </tr>
-
                             @empty
-
                                 <tr>
-
-                                    <td colspan="6">
-
+                                    <td colspan="7">
                                         <div class="empty-state text-center">
-
                                             <i class="bi bi-box-seam"></i>
-
                                             Tidak ada data produk
-
                                         </div>
-
                                     </td>
-
                                 </tr>
                             @endforelse
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </div>
-
         </div>
 
         {{-- PAGINATION --}}
         <div class="mt-4">
-
             {{ $products->links() }}
-
         </div>
 
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.barcode').forEach(function(el) {
+                JsBarcode(el, el.getAttribute('data-value'), {
+                    format: 'CODE128',
+                    width: 1.5,
+                    height: 40,
+                    displayValue: true,
+                    margin: 4,
+                });
+            });
+        });
+    </script>
 @endsection

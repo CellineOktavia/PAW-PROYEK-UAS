@@ -327,3 +327,23 @@ Route::middleware([
         [OwnerDashboardController::class, 'index']
     )->name('owner.dashboard');
 });
+
+// routes/web.php
+Route::get('/api/produk-by-barcode', function (Illuminate\Http\Request $request) {
+    $produk = \App\Models\Product::where('kode_produk', $request->kode)->first();
+
+    if ($produk) {
+        return response()->json([
+            'success' => true,
+            'produk'  => [
+                'id'           => $produk->id,
+                'kode_produk'  => $produk->kode_produk,
+                'nama_produk'  => $produk->nama_produk,
+                'harga_jual'   => $produk->harga_jual,
+                'stok'         => $produk->stok,
+            ],
+        ]);
+    }
+
+    return response()->json(['success' => false]);
+})->middleware('auth');

@@ -194,28 +194,6 @@
             text-align: center;
             margin-top: 6px;
         }
-
-        @media print {
-            body * {
-                visibility: hidden !important;
-            }
-
-            #printBarcode,
-            #printBarcode * {
-                visibility: visible !important;
-            }
-
-            #printBarcode {
-                position: fixed !important;
-                inset: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 14px !important;
-                background: #fff !important;
-            }
-        }
     </style>
 
     <div class="container-fluid">
@@ -284,7 +262,7 @@
                             <div class="barcode-nama">{{ $product->nama_produk }}</div>
                         </div>
                         <div class="text-center mt-3">
-                            <button onclick="window.print()" class="btn-print-barcode">
+                            <button onclick="printBarcode()" class="btn-print-barcode">
                                 <i class="bi bi-printer me-1"></i> Print Barcode
                             </button>
                         </div>
@@ -410,6 +388,69 @@
                 document.getElementById('barcode-error').style.display = 'block';
                 console.error('JsBarcode error:', e);
             }
+        }
+
+        function printBarcode() {
+            // Ambil SVG barcode yang sudah di-generate
+            var svgEl = document.getElementById('barcodesvg');
+            var kode = document.getElementById('kode_produk_data').dataset.kode;
+            var nama = '{{ $product->nama_produk }}';
+            var svgHtml = svgEl.outerHTML;
+
+            // Buka jendela print baru yang bersih
+            var win = window.open('', '_blank', 'width=400,height=300');
+            win.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Barcode ${kode}</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
+                    font-family: 'Courier New', monospace;
+                    background: #fff;
+                }
+                svg {
+                    max-width: 280px;
+                    width: 100%;
+                    display: block;
+                }
+                .kode {
+                    font-size: 14px;
+                    font-weight: 700;
+                    letter-spacing: 4px;
+                    color: #1e293b;
+                    margin-top: 6px;
+                }
+                .nama {
+                    font-size: 11px;
+                    color: #64748b;
+                    margin-top: 3px;
+                }
+                @media print {
+                    @page { margin: 0; size: auto; }
+                }
+            </style>
+        </head>
+        <body>
+            ${svgHtml}
+            <div class="kode">${kode}</div>
+            <div class="nama">${nama}</div>
+        </body>
+        </html>
+    `);
+            win.document.close();
+            win.focus();
+            // Tunggu konten render lalu print
+            setTimeout(function() {
+                win.print();
+                win.close();
+            }, 500);
         }
     </script>
 
