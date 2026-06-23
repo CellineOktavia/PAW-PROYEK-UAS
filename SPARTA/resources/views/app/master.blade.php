@@ -496,6 +496,7 @@
     </style>
 </head>
 
+
 <body>
     <nav class="top-navbar shadow-sm">
         <div class="container-fluid d-flex justify-content-between align-items-center">

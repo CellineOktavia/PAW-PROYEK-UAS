@@ -133,6 +133,89 @@
             border-color: #f1f5f9;
             margin: 8px 0 24px;
         }
+
+        /* ── Barcode ── */
+        .barcode-box {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1.5px solid #e2e8f0;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #barcodesvg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .barcode-kode {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .barcode-nama {
+            font-size: .78rem;
+            color: #94a3b8;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .btn-print-barcode {
+            background: #fff;
+            border: 1.5px dashed #cbd5e1;
+            color: #475569;
+            padding: 7px 16px;
+            border-radius: 10px;
+            font-size: .82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+            margin-top: 2px;
+        }
+
+        .btn-print-barcode:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        #barcode-error {
+            display: none;
+            font-size: .8rem;
+            color: #dc2626;
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+
+            #printBarcode,
+            #printBarcode * {
+                visibility: visible !important;
+            }
+
+            #printBarcode {
+                position: fixed !important;
+                inset: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 14px !important;
+                background: #fff !important;
+            }
+        }
     </style>
 
     <div class="container-fluid">
@@ -143,7 +226,6 @@
                 <h2 class="page-title">Detail Produk</h2>
                 <p class="page-subtitle">Informasi lengkap produk</p>
             </div>
-
             <div class="d-flex gap-2">
                 <a href="{{ route('produk.index') }}" class="btn-back">
                     <i class="bi bi-arrow-left me-1"></i> Kembali
@@ -154,7 +236,7 @@
             </div>
         </div>
 
-        {{-- INFORMASI UTAMA --}}
+        {{-- INFORMASI UTAMA + BARCODE --}}
         <div class="card detail-card">
             <div class="card-header bg-primary text-white">
                 <i class="bi bi-box-seam-fill me-2"></i>
@@ -163,31 +245,49 @@
             <div class="card-body">
                 <div class="row">
 
-                    <div class="col-md-6 info-group">
-                        <p class="info-label">Kode Produk</p>
-                        <span class="product-code-badge">{{ $product->kode_produk }}</span>
+                    {{-- Info produk kiri --}}
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6 info-group">
+                                <p class="info-label">Kode Produk</p>
+                                <span class="product-code-badge">{{ $product->kode_produk }}</span>
+                            </div>
+                            <div class="col-md-6 info-group">
+                                <p class="info-label">Nama Produk</p>
+                                <p class="info-value">{{ $product->nama_produk }}</p>
+                            </div>
+                            <div class="col-md-6 info-group">
+                                <p class="info-label">Merk</p>
+                                <p class="info-value">{{ $product->merk }}</p>
+                            </div>
+                            <div class="col-md-6 info-group">
+                                <p class="info-label">Kategori</p>
+                                <p class="info-value">{{ $product->kategori ?? '-' }}</p>
+                            </div>
+                            <div class="col-md-12 info-group mb-0">
+                                <p class="info-label">Deskripsi</p>
+                                <p class="info-value" style="font-weight:400; color:#475569; line-height:1.6;">
+                                    {{ $product->deskripsi ?? 'Tidak ada deskripsi.' }}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-md-6 info-group">
-                        <p class="info-label">Nama Produk</p>
-                        <p class="info-value">{{ $product->nama_produk }}</p>
-                    </div>
-
-                    <div class="col-md-6 info-group">
-                        <p class="info-label">Merk</p>
-                        <p class="info-value">{{ $product->merk }}</p>
-                    </div>
-
-                    <div class="col-md-6 info-group">
-                        <p class="info-label">Kategori</p>
-                        <p class="info-value">{{ $product->kategori ?? '-' }}</p>
-                    </div>
-
-                    <div class="col-md-12 info-group">
-                        <p class="info-label">Deskripsi</p>
-                        <p class="info-value" style="font-weight: 400; color: #475569; line-height: 1.6;">
-                            {{ $product->deskripsi ?? 'Tidak ada deskripsi.' }}
-                        </p>
+                    {{-- Barcode kanan --}}
+                    <div class="col-md-4 d-flex flex-column justify-content-center">
+                        <p class="info-label text-center mb-2">Barcode Produk</p>
+                        <div class="barcode-box" id="printBarcode">
+                            {{-- Canvas barcode digenerate JS di bawah --}}
+                            <svg id="barcodesvg"></svg>
+                            <p id="barcode-error">Gagal membuat barcode.<br>Periksa kode produk.</p>
+                            <div class="barcode-kode">{{ $product->kode_produk }}</div>
+                            <div class="barcode-nama">{{ $product->nama_produk }}</div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button onclick="window.print()" class="btn-print-barcode">
+                                <i class="bi bi-printer me-1"></i> Print Barcode
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -196,7 +296,6 @@
 
         {{-- STOK & HARGA --}}
         <div class="row">
-
             <div class="col-md-6">
                 <div class="card detail-card">
                     <div class="card-header bg-success text-white">
@@ -204,7 +303,6 @@
                         Informasi Stok
                     </div>
                     <div class="card-body">
-
                         <div class="info-group">
                             <p class="info-label">Stok Saat Ini</p>
                             @if ($product->stok <= $product->stok_minimum)
@@ -219,14 +317,11 @@
                                 </span>
                             @endif
                         </div>
-
                         <hr class="divider">
-
                         <div class="info-group mb-0">
                             <p class="info-label">Stok Minimum</p>
                             <p class="info-value">{{ $product->stok_minimum }} unit</p>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -238,26 +333,21 @@
                         Informasi Harga
                     </div>
                     <div class="card-body">
-
                         <div class="info-group">
                             <p class="info-label">Harga Beli</p>
                             <p class="info-value">Rp {{ number_format($product->harga_beli ?? 0, 0, ',', '.') }}</p>
                         </div>
-
                         <hr class="divider">
-
                         <div class="info-group mb-0">
                             <p class="info-label">Harga Jual</p>
                             <p class="price-highlight">Rp {{ number_format($product->harga_jual, 0, ',', '.') }}</p>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
 
-        {{-- SUPPLIER (opsional, tampil jika ada relasi) --}}
+        {{-- SUPPLIER --}}
         @if ($product->supplier)
             <div class="card detail-card">
                 <div class="card-header" style="background: linear-gradient(135deg, #0891b2, #38bdf8); color: white;">
@@ -266,22 +356,18 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-
                         <div class="col-md-4 info-group">
                             <p class="info-label">Kode Supplier</p>
                             <p class="info-value">{{ $product->supplier->kode_supplier }}</p>
                         </div>
-
                         <div class="col-md-4 info-group">
                             <p class="info-label">Nama Supplier</p>
                             <p class="info-value">{{ $product->supplier->nama_supplier }}</p>
                         </div>
-
                         <div class="col-md-4 info-group">
                             <p class="info-label">Telepon</p>
                             <p class="info-value">{{ $product->supplier->telepon }}</p>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -289,3 +375,44 @@
 
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        // Muat JsBarcode secara dinamis, baru generate setelah loaded
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js';
+            script.onload = function() {
+                generateBarcode();
+            };
+            script.onerror = function() {
+                document.getElementById('barcode-error').style.display = 'block';
+            };
+            document.body.appendChild(script);
+        })();
+
+        function generateBarcode() {
+            try {
+                // Ambil kode produk dari atribut data agar aman dari karakter khusus
+                var kode = document.getElementById('kode_produk_data').dataset.kode;
+
+                JsBarcode('#barcodesvg', kode, {
+                    format: 'CODE128',
+                    width: 2,
+                    height: 72,
+                    displayValue: false,
+                    margin: 8,
+                    lineColor: '#1e293b',
+                    background: '#ffffff',
+                });
+            } catch (e) {
+                document.getElementById('barcodesvg').style.display = 'none';
+                document.getElementById('barcode-error').style.display = 'block';
+                console.error('JsBarcode error:', e);
+            }
+        }
+    </script>
+
+    {{-- Simpan kode produk di data attribute — cara paling aman, bebas dari escaping/quoting issue --}}
+    <span id="kode_produk_data" data-kode="{{ $product->kode_produk }}" style="display:none;" aria-hidden="true"></span>
+@endpush
